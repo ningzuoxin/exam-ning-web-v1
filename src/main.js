@@ -18,6 +18,8 @@ import '@/permission' // permission control
 
 import * as filters from './filters' // global filters
 
+import { getBracketStr } from '@/utils/auth'
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -49,6 +51,8 @@ new Vue({
   store,
   render: h => h(App)
 })
+
+Vue.prototype.$getBracketStr = getBracketStr
 
 Vue.prototype.$isNull = function(value) {
   if (value === '' || value === null || value === undefined || value.length === 0) {

@@ -11,7 +11,7 @@
     <SingleChoice v-show="typeIndex===1" :single-arr="singleArr" :paper-qus="false"/>
     <MultipleChoice v-show="typeIndex===2" :more-arr="moreArr" :paper-qus="false"/>
     <TrueOrFalse v-show="typeIndex===3" :judg-arr="judgArr" :paper-qus="false"/>
-    <blank-group v-show="typeIndex===4" :blank-arr="blankArr" :paper-qus="false"/>
+    <FillBlank v-show="typeIndex===4" :blank-arr="blankArr" :paper-qus="false"/>
     <answer-group v-show="typeIndex===5" :answer-arr="answerArr" :paper-qus="false"/>
   </div>
 </template>
@@ -19,12 +19,12 @@
   import SingleChoice from './singleChoice'
   import MultipleChoice from './multipleChoice'
   import TrueOrFalse from './trueOrFalse'
-  import blankGroup from './blankGroup'
+  import FillBlank from './fillBlank'
   import answerGroup from './answerGroup'
 
   export default {
     name: 'AddQuestionMain',
-    components: { SingleChoice, MultipleChoice, TrueOrFalse, blankGroup, answerGroup },
+    components: { SingleChoice, MultipleChoice, TrueOrFalse, FillBlank, answerGroup },
     data() {
       return {
         typeIndex: 1,

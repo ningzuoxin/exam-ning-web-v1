@@ -342,6 +342,10 @@
   color: #666666;
 }
 
+.C4598E8 {
+  color: #4598E8
+}
+
 /*设置伸缩盒 子项目 stretch 对齐*/
 .align-stretch {
   /* 设置侧轴对齐 */
@@ -396,6 +400,35 @@
   flex-direction: column;
   -webkit-justify-content: space-around;
   justify-content: space-around;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.box-start-wrap {
+  display: -webkit-box;
+  display: -moz-box;
+  /*display: -ms-box;*/
+  flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -ms-box-orient: horizontal;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  -ms-box-align: center;
+  -webkit-box-pack: start;
+  -moz-box-pack: start;
+  -ms-box-pack: start;
+  /* 新版 flex*/
+  /* 设置伸缩容器 */
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  /* 设置主轴对齐 */
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  /* 设置侧轴对齐 */
   -webkit-align-items: center;
   align-items: center;
 }
