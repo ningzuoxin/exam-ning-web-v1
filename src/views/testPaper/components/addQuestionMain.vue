@@ -9,22 +9,22 @@
       <div :class="{activeItem:typeIndex===5}" class="questionTypeItem box-center" @click="changeTypeItem(5)">问答题</div>
     </div>
     <SingleChoice v-show="typeIndex===1" :single-arr="singleArr" :paper-qus="false"/>
-    <more-group v-show="typeIndex===2" :more-arr="moreArr" :paper-qus="false"/>
-    <judg-group v-show="typeIndex===3" :judg-arr="judgArr" :paper-qus="false"/>
+    <MultipleChoice v-show="typeIndex===2" :more-arr="moreArr" :paper-qus="false"/>
+    <TrueOrFalse v-show="typeIndex===3" :judg-arr="judgArr" :paper-qus="false"/>
     <blank-group v-show="typeIndex===4" :blank-arr="blankArr" :paper-qus="false"/>
     <answer-group v-show="typeIndex===5" :answer-arr="answerArr" :paper-qus="false"/>
   </div>
 </template>
 <script>
   import SingleChoice from './singleChoice'
-  import moreGroup from './moreGroup'
-  import JudgGroup from './JudgGroup'
+  import MultipleChoice from './multipleChoice'
+  import TrueOrFalse from './trueOrFalse'
   import blankGroup from './blankGroup'
   import answerGroup from './answerGroup'
 
   export default {
     name: 'AddQuestionMain',
-    components: { SingleChoice, moreGroup, JudgGroup, blankGroup, answerGroup },
+    components: { SingleChoice, MultipleChoice, TrueOrFalse, blankGroup, answerGroup },
     data() {
       return {
         typeIndex: 1,

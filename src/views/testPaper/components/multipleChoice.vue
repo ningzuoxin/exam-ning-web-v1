@@ -2,37 +2,33 @@
   <div :class="{'Mt-20':paperQus}" class="W100 box-v-center">
     <div v-if="!paperQus" style="width: 80%;height: 55px;max-width: 1350px;" class="Mt-10 box-start mousePointer">
       <i class="el-icon-circle-plus normalBlue"/>
-      <div class="Ml-10 normalBlue" @click="showAddTopicPanle">添加单选题</div>
+      <div class="Ml-10 normalBlue" @click="showAddTopicPanle">添加多选题</div>
     </div>
-    <div v-show="showAddTopic" class="addSingleCss box-start align-stretch Pt-20 Pb-20 gray-dark Mb-20">
+    <div v-show="showAddTopic" class="addMoreCss box-start align-stretch Pt-20 Pb-20 gray-dark Mb-20">
       <div style="width: 80%;" class="box-v-start">
         <div class="box-justify Mb-16 align-stretch" style="width: 80%;">
           <div class="rest">
-            <el-input :autosize="{minRows: 2,maxRows: 4}" v-model="singleObj.stem" type="textarea" placeholder="请输入题干内容" />
+            <el-input :autosize="{minRows: 2,maxRows: 4}" v-model="moreObj.stem" type="textarea" placeholder="请输入题干内容"/>
           </div>
-          <div v-if="paperQus">分值：<input v-model="singleObj.score" class="scoreInput">分</div>
+          <div v-if="paperQus">分值：<input v-model="moreObj.score" class="scoreInput">分</div>
         </div>
         <div class="box-justify Mb-16 align-stretch" style="width: 80%;">
           <div class="rest">
-            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="singleObj.analysis" type="textarea" placeholder="请输入题目解析"/>
+            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="moreObj.analysis" type="textarea" placeholder="请输入题目解析"/>
           </div>
         </div>
-        <div v-for="(item, index) in singleObj.opitions" :key="item.id" class="box-justify Mb-16" style="width: 80%;">
+        <div v-for="(item, index) in moreObj.opitions" :key="item.id" class="box-justify Mb-16" style="width:80%">
           <div class="rest box-start">
             <div class="box-start" style="width: 80%;">
               <div class="Mr-10 gray-medium box-start">
                 <div class="circle Mr-10"/>
                 {{ index + 1 | convert }}
               </div>
-              <el-input
-                v-model="item.title"
-                class="rest"
-                placeholder="请输入选项内容"
-              />
+              <el-input v-model="item.title" class="optionItemCss rest" placeholder="请输入选项内容" />
             </div>
             <div class="rest box-start">
               <div style="position: absolute;width: 200px;" class="box-distribute Ml-10">
-                <div :class="{isAnswer: item.isAnswer}" class="circle mousePointer" @click="setAnswer(index)"/>
+                <div :class="{isAnswer:item.isAnswer}" class="circle mousePointer" @click="setAnswer(index)"/>
                 <p class="mousePointer" @click="setAnswer(index)">设为答案</p>
                 <i class="el-icon-sort-up mousePointer" @click="upItemOpition(index)"/>
                 <i class="el-icon-sort-down mousePointer" @click="downItemOpition(index)"/>
@@ -45,12 +41,13 @@
           <div class="rest box-start">
             <div class="box-start" style="width: 80%;">
               <div class="rest addOpition box-center mousePointer gray-light" @click="addOpition">
-                <i class="el-icon-circle-plus" style="letter-spacing: 10px;"/>添加选项</div>
+                <i class="el-icon-circle-plus" style="letter-spacing: 10px;"/>添加选项
+              </div>
             </div>
             <div class="rest box-start">
               <div style="position: absolute;width: 200px;" class="box-distribute Ml-10">
-                <div class="saveBtn box-center mousePointer" @click="addSingle">保存</div>
-                <div class="deleteBtn box-center mousePointer" @click="clearSingle">删除</div>
+                <div class="saveBtn box-center mousePointer" @click="addMore">保存</div>
+                <div class="deleteBtn box-center mousePointer" @click="clearMore">删除</div>
               </div>
             </div>
           </div>
@@ -63,9 +60,9 @@
   import Url from '@/api/url'
 
   export default {
-    name: 'SingleChoice',
+    name: 'MultipleChoice',
     props: {
-      singleArr: {
+      moreArr: {
         type: Array,
         default: null
       },
@@ -79,11 +76,12 @@
         textarea2: null,
         activeNames: ['1'],
         examQuestionList: [],
-        singleObj: {
+        moreObj: {
           analysis: null,
           answer: null,
           stem: null,
           score: null,
+          missScore: null,
           showAddTopic: false,
           opitions: [{
             isAnswer: true,
@@ -118,7 +116,7 @@
       }
     },
     watch: {
-      singleArr: {
+      moreArr: {
         handler(val, oldVal) {
           this.examQuestionList = val.map(item => {
             return this.$copy(item)
@@ -128,7 +126,7 @@
       }
     },
     created() {
-      this.examQuestionList = this.$isNull(this.singleArr) ? [] : this.singleArr.map(item => {
+      this.examQuestionList = this.$isNull(this.moreArr) ? [] : this.moreArr.map(item => {
         return this.$copy(item)
       })
     },
@@ -137,23 +135,21 @@
         console.log(val)
       },
       addOpition() {
-        this.singleObj.opitions.push({
+        this.moreObj.opitions.push({
           isAnswer: false,
           title: null,
           id: new Date().getTime()
         })
       },
       setAnswer(index) {
-        for (let i = 0; i < this.singleObj.opitions.length; i++) {
-          if (index === i) {
-            this.$set(this.singleObj.opitions[i], 'isAnswer', true)
-          } else {
-            this.$set(this.singleObj.opitions[i], 'isAnswer', false)
-          }
+        if (this.moreObj.opitions[index].isAnswer === false) {
+          this.$set(this.moreObj.opitions[index], 'isAnswer', true)
+        } else {
+          this.$set(this.moreObj.opitions[index], 'isAnswer', false)
         }
       },
       deleteOpition(index) {
-        this.singleObj.opitions.splice(index, 1)
+        this.moreObj.opitions.splice(index, 1)
       },
       showAddTopicPanle() {
         if (this.editIndexNow !== null) {
@@ -163,41 +159,43 @@
         this.editIndexNow = 0
         this.showAddTopic = true
       },
-      addSingle() {
-        let temp = 0
+      addMore() {
+        var temp = []
         const tempChoice = {
-          choices: this.singleObj.opitions.map(item => {
+          choices: this.moreObj.opitions.map(item => {
             return item.title
           })
         }
-        for (let i = 0; i < this.singleObj.opitions.length; i++) {
-          if (this.singleObj.opitions[i].isAnswer === true) {
-            temp = i
+        for (let i = 0; i < this.moreObj.opitions.length; i++) {
+          if (this.moreObj.opitions[i].isAnswer === true) {
+            temp.push(i)
           }
         }
         const params = {
-          analysis: this.singleObj.analysis,
-          answer: temp,
+          analysis: this.moreObj.analysis,
+          answer: JSON.stringify(temp),
           metas: JSON.stringify(tempChoice),
           score: 0,
-          stem: this.singleObj.stem,
-          type: 'CHOICE',
-          categoryId: this.$isNull(this.singleObj.knowledgeType) ? null : this.singleObj.knowledgeType[this.singleObj.knowledgeType.length - 1]
+          missScore: 0,
+          stem: this.moreObj.stem,
+          type: 'CHOICE_MULTI',
+          categoryId: this.$isNull(this.moreObj.knowledgeType) ? null : this.moreObj.knowledgeType[this.moreObj.knowledgeType.length - 1]
         }
         this.$post(Url.examquestions.add, params).then(data => {
           console.log(data)
           this.$message.success('新增成功')
-          this.singleObj.id = data.data.id
-          this.examQuestionList.push(this.singleObj)
-          this.clearSingle()
+          this.moreObj.id = data.data.id
+          this.examQuestionList.push(this.moreObj)
+          this.clearMore()
         })
       },
-      clearSingle() {
-        this.singleObj = {
+      clearMore() {
+        this.moreObj = {
           analysis: null,
           answer: null,
           stem: null,
           score: null,
+          missScore: null,
           opitions: [{
             isAnswer: true,
             title: null,
@@ -223,17 +221,17 @@
         if (index === 0) {
           return
         }
-        var tempOption = this.singleObj.opitions[index - 1]
-        this.$set(this.singleObj.opitions, index - 1, this.singleObj.opitions[index])
-        this.$set(this.singleObj.opitions, index, tempOption)
+        var tempOption = this.moreObj.opitions[index - 1]
+        this.$set(this.moreObj.opitions, index - 1, this.moreObj.opitions[index])
+        this.$set(this.moreObj.opitions, index, tempOption)
       },
       downItemOpition(index) {
-        if (index === this.singleObj.opitions.length - 1) {
+        if (index === this.moreObj.opitions.length - 1) {
           return
         }
-        var tempOption = this.singleObj.opitions[index + 1]
-        this.$set(this.singleObj.opitions, index + 1, this.singleObj.opitions[index])
-        this.$set(this.singleObj.opitions, index, tempOption)
+        var tempOption = this.moreObj.opitions[index + 1]
+        this.$set(this.moreObj.opitions, index + 1, this.moreObj.opitions[index])
+        this.$set(this.moreObj.opitions, index, tempOption)
       },
       upItem(index) {
         if (this.editIndexNow !== null) {
@@ -264,10 +262,6 @@
           this.$message('请先保存题目')
           return
         }
-        if (this.paperQus) {
-          this.examQuestionList.splice(index, 1)
-          return
-        }
         this.$confirm('此操作将永久删除此试题, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -294,8 +288,8 @@
         this.$set(this.examQuestionList[index], 'showAddTopic', true)
       },
       saveTopic(data) {
-        this.$set(this.examQuestionList, this.editIndexNow, data)
-        this.$emit('groupSingle', this.examQuestionList)
+        this.$set(this.examQuestionList, this.editIndexNow, this.$copy(data))
+        this.$emit('groupMore', this.examQuestionList)
         this.editIndexNow = null
       },
       addLastItem(index) {
@@ -303,25 +297,26 @@
           this.$message('请先保存题目')
           return
         }
-        this.singleObj.showAddTopic = true
-        this.examQuestionList.splice(index + 1, 0, this.singleObj)
+        this.moreObj.showAddTopic = true
+        this.examQuestionList.splice(index + 1, 0, this.moreObj)
         this.editIndexNow = index + 1
       }
     }
   }
 </script>
 <style scoped>
-  .addSingleCss {
+  .addMoreCss {
     width: 80%;
     max-width: 1350px;
+    /* height:341px; */
     background: rgba(240, 240, 240, 1);
   }
 
-  .singleCss {
+  .moreCss {
     width: 80%;
     max-width: 1350px;
     background: white;
-    border: 1px solid rgba(200, 200, 200, 1);
+    border: 1px solid rgba(203, 203, 203, 1);
   }
 
   .saveBtn {
@@ -353,7 +348,7 @@
   .circle {
     width: 12px;
     height: 12px;
-    border-radius: 50%;
+    border-radius: 25%;
     border: 1px solid rgba(151, 151, 151, 1);
   }
 
@@ -363,7 +358,7 @@
     border: 2px dashed rgba(203, 203, 203, 1);
   }
 
-  .singleDetail {
+  .moreDetail {
     padding: 30px 70px
   }
 
