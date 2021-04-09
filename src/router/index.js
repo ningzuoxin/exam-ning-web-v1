@@ -181,31 +181,60 @@ export const constantRoutes = [
       }
     ]
   },
+  // 试卷模块路由
+  {
+    path: '/testPaper',
+    component: Layout,
+    redirect: '/testPaper/listTestPaper',
+    name: '试卷管理',
+    meta: { title: '试卷管理', icon: 'el-icon-document' },
+    children: [
+      {
+        path: 'listTestPaper',
+        name: '试卷列表',
+        component: () => import('@/views/testPaper/listTestPaper'),
+        meta: { title: '试卷列表', icon: 'el-icon-tickets' }
+      },
+      {
+        path: 'addTestPaper',
+        name: '添加试卷',
+        component: () => import('@/views/testPaper/addTestPaper'),
+        meta: { title: '添加试卷', icon: 'el-icon-document-add' }
+      },
+      {
+        path: 'listQuestion',
+        name: '试题列表',
+        component: () => import('@/views/testPaper/listQuestion'),
+        meta: { title: '试题列表', icon: 'el-icon-tickets' }
+      },
+      {
+        path: 'addQuestion',
+        component: () => import('@/views/testPaper/addQuestion'),
+        name: 'AddQuestion',
+        hidden: true,
+        meta: { title: '添加试题', level: 2, noCache: true }
+      }
+    ]
+  },
   // 考试模块路由
   {
     path: '/exam',
     component: Layout,
-    redirect: '/exam/index',
-    name: '考试管理',
-    meta: { title: '考试管理', icon: 'el-icon-document' },
+    redirect: '/exam/listExam',
+    name: '考试中心',
+    meta: { title: '考试中心', icon: 'el-icon-s-data' },
     children: [
       {
-        path: 'index',
-        name: '试卷列表',
-        component: () => import('@/views/user/index'),
-        meta: { title: '试卷列表', icon: 'el-icon-tickets' }
+        path: 'listExam',
+        name: '考试列表',
+        component: () => import('@/views/exam/listExam'),
+        meta: { title: '考试列表', icon: 'el-icon-tickets' }
       },
       {
-        path: 'question',
-        name: '试题列表',
-        component: () => import('@/views/user/index'),
-        meta: { title: '试题列表', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'add',
-        name: '添加试卷',
-        component: () => import('@/views/user/addUser'),
-        meta: { title: '添加试卷', icon: 'el-icon-document-add' }
+        path: 'listExamRecord',
+        name: '考试记录',
+        component: () => import('@/views/exam/listExamRecord'),
+        meta: { title: '考试成绩', icon: 'el-icon-tickets' }
       }
     ]
   },

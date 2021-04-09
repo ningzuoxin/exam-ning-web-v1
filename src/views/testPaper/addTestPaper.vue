@@ -32,7 +32,7 @@
 
 <script>
   export default {
-    name: 'AddUser',
+    name: 'AddTestPaper',
     data() {
       return {
         form: {

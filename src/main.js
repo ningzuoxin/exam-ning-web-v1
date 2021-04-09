@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
+import '@/styles/common.css'
 
 import App from './App'
 import store from './store'
@@ -14,6 +15,8 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+import * as filters from './filters' // global filters
 
 /**
  * If you don't want to use mock-server
@@ -33,6 +36,11 @@ Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 
+// register global utility filters.
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -41,3 +49,11 @@ new Vue({
   store,
   render: h => h(App)
 })
+
+Vue.prototype.$isNull = function(value) {
+  if (value === '' || value === null || value === undefined || value.length === 0) {
+    return true
+  } else {
+    return false
+  }
+}
