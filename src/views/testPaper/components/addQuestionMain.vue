@@ -12,7 +12,7 @@
     <MultipleChoice v-show="typeIndex===2" :more-arr="moreArr" :paper-qus="false"/>
     <TrueOrFalse v-show="typeIndex===3" :judg-arr="judgArr" :paper-qus="false"/>
     <FillBlank v-show="typeIndex===4" :blank-arr="blankArr" :paper-qus="false"/>
-    <answer-group v-show="typeIndex===5" :answer-arr="answerArr" :paper-qus="false"/>
+    <AnswerQuestion v-show="typeIndex===5" :answer-arr="answerArr" :paper-qus="false"/>
   </div>
 </template>
 <script>
@@ -20,11 +20,11 @@
   import MultipleChoice from './multipleChoice'
   import TrueOrFalse from './trueOrFalse'
   import FillBlank from './fillBlank'
-  import answerGroup from './answerGroup'
+  import AnswerQuestion from './answerQuestion'
 
   export default {
     name: 'AddQuestionMain',
-    components: { SingleChoice, MultipleChoice, TrueOrFalse, FillBlank, answerGroup },
+    components: { SingleChoice, MultipleChoice, TrueOrFalse, FillBlank, AnswerQuestion },
     data() {
       return {
         typeIndex: 1,
