@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
+    <el-form ref="form" :model="form" label-width="60px">
       <el-form-item label="账号">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
@@ -21,6 +21,9 @@
           <el-radio label="男"></el-radio>
           <el-radio label="女"></el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="身份证">
+        <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">添加</el-button>
