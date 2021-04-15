@@ -1,7 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input placeholder="Title" style="width: 200px;" class="filter-item"/>
+      <el-select v-model="query.type" placeholder="请选择题型" class="filter-item">
+        <el-option label="选择题" value="shanghai"/>
+        <el-option label="填空题" value="beijing"/>
+        <el-option label="问答题" value="beijing"/>
+      </el-select>
+      <el-input placeholder="关键字" style="width: 200px;margin-left: 5px;" class="filter-item"/>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search">
         查询
       </el-button>
@@ -24,18 +29,33 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
+        prop="type"
+        label="题型"
+        width="80">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="stem"
+        label="题干">
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
+        prop="refNum"
+        label="引用数"
+        width="70">
+      </el-table-column>
+      <el-table-column
+        prop="score"
+        label="分值"
+        width="50">
+      </el-table-column>
+      <el-table-column
+        prop="answer"
+        label="正确答案"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="创建日期"
+        width="120">
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template>
@@ -64,52 +84,20 @@
 </template>
 
 <script>
+  import { listQuestion } from '@/api/testPaper/question'
+
   export default {
     name: 'ListQuestion',
     data() {
       return {
-        tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        query: {
+          type: ''
+        },
+        tableData: []
       }
+    },
+    created() {
+      this.tableData = listQuestion()
     },
     methods: {
       add(type) {
