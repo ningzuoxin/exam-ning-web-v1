@@ -57,9 +57,10 @@ const users = [
   }
 ]
 
-export function listUser() {
+export function listUser(query) {
   return request({
     url: '/sss/user/page',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }

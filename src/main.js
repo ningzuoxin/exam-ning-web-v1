@@ -12,6 +12,7 @@ import '@/styles/common.css'
 import App from './App'
 import store from './store'
 import router from './router'
+import Pagination from '@/components/Pagination'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -42,6 +43,9 @@ Vue.use(ElementUI, { locale })
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+
+// 全局组件挂载
+Vue.component('Pagination', Pagination)
 
 Vue.config.productionTip = false
 

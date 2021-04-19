@@ -65,13 +65,13 @@
       </el-table-column>
     </el-table>
 
-    <div style="text-align: right;margin-top: 15px;">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000">
-      </el-pagination>
-    </div>
+    <pagination
+      v-show="query.total>0"
+      :total="query.total"
+      :page.sync="query.currentPage"
+      :limit.sync="query.pageSize"
+      @pagination="getList"
+    />
 
   </div>
 </template>
@@ -83,15 +83,29 @@
     name: 'Index',
     data() {
       return {
-        tableData: []
+        tableData: [],
+        query: {
+          currentPage: 1,
+          keyWord: null,
+          pageSize: 6,
+          total: null
+        }
       }
     },
     created() {
-      listUser().then(response => {
-        this.tableData = response.data.records
-      })
+      this.getList()
     },
-    methods: {}
+    methods: {
+      getList() {
+        const params = { 'keyword': this.query.keyWord, 'pNum': this.query.currentPage, 'pSize': this.query.pageSize }
+        listUser(params).then(response => {
+          const data = response.data
+          this.query.currentPage = data.current
+          this.query.total = data.total
+          this.tableData = data.records
+        })
+      }
+    }
   }
 </script>
 
