@@ -1,3 +1,5 @@
+import request from '@/utils/request'
+
 const users = [
   {
     username: 'admin',
@@ -56,5 +58,8 @@ const users = [
 ]
 
 export function listUser() {
-  return users
+  return request({
+    url: '/sss/user/page',
+    method: 'get'
+  })
 }

@@ -12,7 +12,7 @@
 
     <el-table
       :data="tableData"
-      height="85%"
+      height="400px"
       border
       style="width: 100%">
       <el-table-column
@@ -45,11 +45,11 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="idCard"
+        prop="idcard"
         label="身份证">
       </el-table-column>
       <el-table-column
-        prop="createCime"
+        prop="createTime"
         label="创建日期"
         width="110">
       </el-table-column>
@@ -87,7 +87,9 @@
       }
     },
     created() {
-      this.tableData = listUser()
+      listUser().then(response => {
+        this.tableData = response.data.records
+      })
     },
     methods: {}
   }
