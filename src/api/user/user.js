@@ -22,10 +22,7 @@ export function addUser(user) {
   return request({
     url: '/sss/user/add',
     method: 'post',
-    data: {
-      username: 'zhangsan',
-      password: '123456'
-    }
+    data: user
   })
 }
 

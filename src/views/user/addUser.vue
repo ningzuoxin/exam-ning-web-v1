@@ -45,7 +45,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import { addUser } from '@/api/user/user'
 
   export default {
@@ -94,17 +93,24 @@
     },
     methods: {
       onSubmit() {
-        addUser().then(response => {
-          if (response.code === 200) {
-            alert('添加成功')
+        addUser(this.form).then(response => {
+          console.log(response.data)
+          const data = response.data
+          if (data.code === 20000) {
+            this.$message({ showClose: true, message: '添加成功', type: 'success' })
+            setTimeout(() => this.$router.push({ path: '/user/index' }), 2000)
           }
         })
         // this.$refs['form'].validate(valid => {
         //   if (valid) {
         //     addUser(this.form).then(response => {
-        //       if (response.code === 200) {
-        //         this.msgSuccess('添加成功')
+        //       console.log(response.data)
+        //       const data = response.data
+        //       if (data.code === 20000) {
+        //         this.$message({ showClose: true, message: '添加成功', type: 'success' })
         //         setTimeout(() => this.$router.push({ path: '/user/index' }), 2000)
+        //       } else {
+        //         this.$message({ showClose: true, message: data.msg, type: 'error' })
         //       }
         //     })
         //   }
