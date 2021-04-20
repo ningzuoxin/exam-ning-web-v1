@@ -1,62 +1,10 @@
 import request from '@/utils/request'
 
-const users = [
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  },
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  },
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  },
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  },
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  },
-  {
-    username: 'admin',
-    email: '123456789@qq.com',
-    mobile: '13301330133',
-    nickname: '管理员admin',
-    gender: '男',
-    idCard: '400000199001011234',
-    createCime: '2020-01-01'
-  }
-]
-
+/**
+ * 查询用户列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
 export function listUser(query) {
   return request({
     url: '/sss/user/page',
@@ -64,3 +12,20 @@ export function listUser(query) {
     params: query
   })
 }
+
+/**
+ * 添加用户
+ * @param user
+ * @returns {AxiosPromise}
+ */
+export function addUser(user) {
+  return request({
+    url: '/sss/user/add',
+    method: 'post',
+    data: {
+      username: 'zhangsan',
+      password: '123456'
+    }
+  })
+}
+

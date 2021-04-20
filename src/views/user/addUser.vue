@@ -1,29 +1,29 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="60px">
-      <el-form-item label="账号">
-        <el-input v-model="form.name"></el-input>
+    <el-form ref="form" :model="form" :rules="rules" label-width="60px">
+      <el-form-item label="账号" prop="username">
+        <el-input v-model="form.username"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" type="password"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="form.email"></el-input>
       </el-form-item>
-      <el-form-item label="手机">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="form.mobile"></el-input>
       </el-form-item>
-      <el-form-item label="昵称">
-        <el-input v-model="form.name"></el-input>
+      <el-form-item label="昵称" prop="nickname">
+        <el-input v-model="form.nickname"></el-input>
       </el-form-item>
       <el-form-item label="性别">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="男"></el-radio>
-          <el-radio label="女"></el-radio>
+        <el-radio-group v-model="form.gender">
+          <el-radio label="1">男</el-radio>
+          <el-radio label="2">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="身份证">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="form.idcard"></el-input>
       </el-form-item>
       <el-form-item label="头像">
         <el-upload
@@ -45,26 +45,70 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  import { addUser } from '@/api/user/user'
+
   export default {
     name: 'AddUser',
     data() {
       return {
+        // 表单校验
+        rules: {
+          username: [
+            { required: true, message: '账号不能为空', trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' }
+          ],
+          email: [
+            { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
+            {
+              type: 'email',
+              message: '请输入正确的邮箱地址',
+              trigger: ['blur', 'change']
+            }
+          ],
+          mobile: [
+            { required: true, message: '手机号码不能为空', trigger: 'blur' },
+            {
+              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+              message: '请输入正确的手机号码',
+              trigger: 'blur'
+            }
+          ],
+          nickname: [
+            { required: true, message: '昵称不能为空', trigger: 'blur' }
+          ]
+        },
         imageUrl: '',
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+          username: '',
+          password: '',
+          email: '',
+          mobile: '',
+          nickname: '',
+          gender: 2,
+          idcard: ''
         }
       }
     },
     methods: {
       onSubmit() {
-        this.$message('submit!')
+        addUser().then(response => {
+          if (response.code === 200) {
+            alert('添加成功')
+          }
+        })
+        // this.$refs['form'].validate(valid => {
+        //   if (valid) {
+        //     addUser(this.form).then(response => {
+        //       if (response.code === 200) {
+        //         this.msgSuccess('添加成功')
+        //         setTimeout(() => this.$router.push({ path: '/user/index' }), 2000)
+        //       }
+        //     })
+        //   }
+        // })
       },
       onCancel() {
         this.$message({

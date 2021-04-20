@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input placeholder="关键字" style="width: 200px;" class="filter-item"/>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search">
+      <el-input placeholder="关键字" v-model="query.keyWord" style="width: 200px;" class="filter-item"/>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="getList">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleAdd">
         添加
       </el-button>
     </div>
@@ -43,6 +43,9 @@
         prop="gender"
         label="性别"
         width="50">
+        <template slot-scope="scope">
+          {{ scope.row.gender===0?'未知':(scope.row.gender===1?'男':'女') }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="idcard"
@@ -52,6 +55,9 @@
         prop="createTime"
         label="创建日期"
         width="110">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template>
@@ -86,9 +92,9 @@
         tableData: [],
         query: {
           currentPage: 1,
-          keyWord: null,
+          keyWord: '',
           pageSize: 6,
-          total: null
+          total: 0
         }
       }
     },
@@ -104,6 +110,9 @@
           this.query.total = data.total
           this.tableData = data.records
         })
+      },
+      handleAdd() {
+        this.$router.push({ path: '/user/add' })
       }
     }
   }

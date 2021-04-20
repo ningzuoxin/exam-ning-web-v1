@@ -3,6 +3,8 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
+axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -35,7 +37,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -43,6 +45,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(response)
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
@@ -74,7 +77,8 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: error.message,
+      // message: error.message,
+      message: '请求超时',
       type: 'error',
       duration: 5 * 1000
     })

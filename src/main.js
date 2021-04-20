@@ -12,6 +12,7 @@ import '@/styles/common.css'
 import App from './App'
 import store from './store'
 import router from './router'
+import { parseTime, resetForm, addDateRange, selectDictLabel, handleTree } from '@/utils/ruoyi'
 import Pagination from '@/components/Pagination'
 
 import '@/icons' // icon
@@ -56,6 +57,15 @@ new Vue({
   render: h => h(App)
 })
 
+// 全局方法挂载
+// Vue.prototype.getDicts = getDicts
+// Vue.prototype.getConfigKey = getConfigKey
+Vue.prototype.parseTime = parseTime
+Vue.prototype.resetForm = resetForm
+Vue.prototype.addDateRange = addDateRange
+Vue.prototype.selectDictLabel = selectDictLabel
+// Vue.prototype.download = download
+Vue.prototype.handleTree = handleTree
 Vue.prototype.$getBracketStr = getBracketStr
 
 Vue.prototype.$isNull = function(value) {
