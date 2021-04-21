@@ -93,7 +93,7 @@
         query: {
           currentPage: 1,
           keyWord: '',
-          pageSize: 6,
+          pageSize: 10,
           total: 0
         }
       }

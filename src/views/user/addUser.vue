@@ -18,8 +18,8 @@
       </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="form.gender">
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
+          <el-radio :label="1">男</el-radio>
+          <el-radio :label="2">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="身份证">
@@ -93,28 +93,18 @@
     },
     methods: {
       onSubmit() {
-        addUser(this.form).then(response => {
-          console.log(response.data)
-          const data = response.data
-          if (data.code === 20000) {
-            this.$message({ showClose: true, message: '添加成功', type: 'success' })
-            setTimeout(() => this.$router.push({ path: '/user/index' }), 2000)
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            addUser(this.form).then(response => {
+              if (response.code === 20000) {
+                this.msgSuccess('添加成功')
+                setTimeout(() => this.$router.push({ path: '/user/index' }), 1000)
+              }
+            }).catch(error => {
+              // console.log(error)
+            })
           }
         })
-        // this.$refs['form'].validate(valid => {
-        //   if (valid) {
-        //     addUser(this.form).then(response => {
-        //       console.log(response.data)
-        //       const data = response.data
-        //       if (data.code === 20000) {
-        //         this.$message({ showClose: true, message: '添加成功', type: 'success' })
-        //         setTimeout(() => this.$router.push({ path: '/user/index' }), 2000)
-        //       } else {
-        //         this.$message({ showClose: true, message: data.msg, type: 'error' })
-        //       }
-        //     })
-        //   }
-        // })
       },
       onCancel() {
         this.$message({
@@ -166,8 +156,8 @@
   }
 
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 118px;
+    height: 128px;
     display: block;
   }
 </style>

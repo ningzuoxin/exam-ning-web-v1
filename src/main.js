@@ -68,6 +68,14 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.handleTree = handleTree
 Vue.prototype.$getBracketStr = getBracketStr
 
+Vue.prototype.msgSuccess = function(msg) {
+  this.$message({ showClose: true, message: msg, type: 'success' })
+}
+
+Vue.prototype.msgError = function(msg) {
+  this.$message({ showClose: true, message: msg, type: 'error' })
+}
+
 Vue.prototype.$isNull = function(value) {
   if (value === '' || value === null || value === undefined || value.length === 0) {
     return true
