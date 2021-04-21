@@ -26,3 +26,17 @@ export function addUser(user) {
   })
 }
 
+/**
+ * 删除用户
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function deleteUser(id) {
+  return request({
+    url: '/sss/user/delete',
+    method: 'post',
+    params: { id: id }
+  })
+}
+
+

@@ -60,11 +60,11 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
-        <template>
+        <template slot-scope="scope">
           <el-button type="primary" size="mini">
             修改
           </el-button>
-          <el-button size="mini" type="danger">
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">
             删除
           </el-button>
         </template>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-  import { listUser } from '@/api/user/user'
+  import { listUser, deleteUser } from '@/api/user/user'
 
   export default {
     name: 'Index',
@@ -113,6 +113,20 @@
       },
       handleAdd() {
         this.$router.push({ path: '/user/add' })
+      },
+      handleDelete(row) {
+        const id = row.id
+        this.$confirm('是否确认删除该条数据?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function() {
+          return deleteUser(id)
+        }).then(() => {
+          this.msgSuccess('删除成功')
+          this.getList()
+        }).catch(function() {
+        })
       }
     }
   }

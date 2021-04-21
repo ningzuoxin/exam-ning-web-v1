@@ -100,8 +100,7 @@
                 this.msgSuccess('添加成功')
                 setTimeout(() => this.$router.push({ path: '/user/index' }), 1000)
               }
-            }).catch(error => {
-              // console.log(error)
+            }).catch(function() {
             })
           }
         })
