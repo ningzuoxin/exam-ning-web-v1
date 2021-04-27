@@ -61,7 +61,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row.id)">
             修改
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">
@@ -113,6 +113,11 @@
       },
       handleAdd() {
         this.$router.push({ path: '/user/add' })
+      },
+      handleUpdate(id) {
+        if (id) {
+          this.$router.push({ path: `/user/update/${id}` })
+        }
       },
       handleDelete(row) {
         const id = row.id

@@ -14,6 +14,19 @@ export function listUser(query) {
 }
 
 /**
+ * 获取单个用户
+ * @param id
+ * @returns {AxiosPromise}
+ */
+export function getUser(query) {
+  return request({
+    url: '/sss/user/get',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 添加用户
  * @param user
  * @returns {AxiosPromise}
@@ -21,6 +34,19 @@ export function listUser(query) {
 export function addUser(user) {
   return request({
     url: '/sss/user/add',
+    method: 'post',
+    data: user
+  })
+}
+
+/**
+ * 修改用户
+ * @param user
+ * @returns {AxiosPromise}
+ */
+export function editUser(user) {
+  return request({
+    url: '/sss/user/edit',
     method: 'post',
     data: user
   })
@@ -38,5 +64,3 @@ export function deleteUser(id) {
     params: { id: id }
   })
 }
-
-

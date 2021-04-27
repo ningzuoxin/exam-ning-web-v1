@@ -164,20 +164,27 @@ export const constantRoutes = [
     path: '/user',
     component: Layout,
     redirect: '/user/index',
-    name: '用户管理',
+    name: 'User',
     meta: { title: '用户管理', icon: 'el-icon-user-solid' },
     children: [
       {
         path: 'index',
-        name: '用户列表',
+        name: 'IndexUser',
         component: () => import('@/views/user/index'),
         meta: { title: '用户列表', icon: 'el-icon-tickets' }
       },
       {
         path: 'add',
-        name: '添加用户',
+        name: 'AddUser',
         component: () => import('@/views/user/addUser'),
         meta: { title: '添加用户', icon: 'el-icon-document-add' }
+      },
+      {
+        path: 'update/:id',
+        name: 'UpdateUser',
+        component: () => import('@/views/user/updateUser'),
+        meta: { title: '编辑用户', icon: 'el-icon-document-add' },
+        hidden: true
       }
     ]
   },
@@ -186,24 +193,24 @@ export const constantRoutes = [
     path: '/testPaper',
     component: Layout,
     redirect: '/testPaper/listTestPaper',
-    name: '试卷管理',
+    name: 'TestPaper',
     meta: { title: '试卷管理', icon: 'el-icon-document' },
     children: [
       {
         path: 'listTestPaper',
-        name: '试卷列表',
+        name: 'ListTestPaper',
         component: () => import('@/views/testPaper/listTestPaper'),
         meta: { title: '试卷列表', icon: 'el-icon-tickets' }
       },
       {
         path: 'addTestPaper',
-        name: '添加试卷',
+        name: 'AddTestPaper',
         component: () => import('@/views/testPaper/addTestPaper'),
         meta: { title: '添加试卷', icon: 'el-icon-document-add' }
       },
       {
         path: 'listQuestion',
-        name: '试题列表',
+        name: 'ListQuestion',
         component: () => import('@/views/testPaper/listQuestion'),
         meta: { title: '试题列表', icon: 'el-icon-tickets' }
       },
@@ -221,18 +228,18 @@ export const constantRoutes = [
     path: '/exam',
     component: Layout,
     redirect: '/exam/listExam',
-    name: '考试中心',
+    name: 'Exam',
     meta: { title: '考试中心', icon: 'el-icon-s-data' },
     children: [
       {
         path: 'listExam',
-        name: '考试列表',
+        name: 'ListExam',
         component: () => import('@/views/exam/listExam'),
         meta: { title: '考试列表', icon: 'el-icon-tickets' }
       },
       {
         path: 'listExamRecord',
-        name: '考试记录',
+        name: 'ListExamRecord',
         component: () => import('@/views/exam/listExamRecord'),
         meta: { title: '考试成绩', icon: 'el-icon-tickets' }
       }
