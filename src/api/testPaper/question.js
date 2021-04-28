@@ -1,62 +1,25 @@
-const questions = [
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  },
-  {
-    type: '选择题',
-    stem: '关于加工流水线工序人力工时说明有误的是（）',
-    refNum: '12',
-    score: '5',
-    answer: 'A',
-    createTime: '2020-01-01'
-  }
-]
+import request from '@/utils/request'
 
-export function listQuestion() {
-  return questions
+/**
+ * 查询考题列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listQuestion(query) {
+  return request({
+    url: '/xxx/exam/question/page',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
+ * 查询所有题型
+ * @returns {AxiosPromise}
+ */
+export function listTypes() {
+  return request({
+    url: '/xxx/exam/question/type',
+    method: 'get'
+  })
 }

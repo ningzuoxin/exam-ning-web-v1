@@ -2,12 +2,10 @@
   <div class="app-container">
     <div class="filter-container">
       <el-select v-model="query.type" placeholder="请选择题型" class="filter-item">
-        <el-option label="选择题" value="shanghai"/>
-        <el-option label="填空题" value="beijing"/>
-        <el-option label="问答题" value="beijing"/>
+        <el-option v-for="(item,index) in types" :label="item.title" :value="item.type" :key="index"/>
       </el-select>
-      <el-input placeholder="关键字" style="width: 200px;margin-left: 5px;" class="filter-item"/>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search">
+      <el-input v-model="query.keyWord" placeholder="关键字" style="width: 200px;margin-left: 5px;" class="filter-item"/>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="getList">
         查询
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="add(1)">
@@ -20,7 +18,7 @@
 
     <el-table
       :data="tableData"
-      height="85%"
+      height="400px"
       border
       style="width: 100%">
       <el-table-column
@@ -32,6 +30,9 @@
         prop="type"
         label="题型"
         width="80">
+        <template slot-scope="scope">
+          {{ scope.row.type | convertQuestionTypeToTitle(scope.row.type) }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="stem"
@@ -72,32 +73,38 @@
       </el-table-column>
     </el-table>
 
-    <div style="text-align: right;margin-top: 15px;">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000">
-      </el-pagination>
-    </div>
+    <pagination
+      v-show="query.total>0"
+      :total="query.total"
+      :page.sync="query.currentPage"
+      :limit.sync="query.pageSize"
+      @pagination="getList"
+    />
 
   </div>
 </template>
 
 <script>
-  import { listQuestion } from '@/api/testPaper/question'
+  import { listQuestion, listTypes } from '@/api/testPaper/question'
 
   export default {
     name: 'ListQuestion',
     data() {
       return {
         query: {
-          type: ''
+          type: '',
+          keyWord: '',
+          currentPage: 1,
+          pageSize: 10,
+          total: 0
         },
-        tableData: []
+        tableData: [],
+        types: []
       }
     },
     created() {
-      this.tableData = listQuestion()
+      this.getQuestionType()
+      this.getList()
     },
     methods: {
       add(type) {
@@ -106,6 +113,26 @@
         } else if (type === 2) { // Excel导入
           this.$router.push('')
         }
+      },
+      getQuestionType() {
+        listTypes().then(response => {
+          this.types = response.data
+        }).catch(function() {
+        })
+      },
+      getList() {
+        const params = {
+          'type': this.query.type,
+          'keyword': this.query.keyWord,
+          'pNum': this.query.currentPage,
+          'pSize': this.query.pageSize
+        }
+        listQuestion(params).then(response => {
+          const data = response.data
+          this.query.currentPage = data.current
+          this.query.total = data.total
+          this.tableData = data.records
+        })
       }
     }
   }

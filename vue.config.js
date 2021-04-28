@@ -56,6 +56,25 @@ module.exports = {
             }
           }
         }
+      },
+      '/xxx': {
+        target: 'http://127.0.0.1:9202/',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/xxx']: ''
+        },
+        // 由于vue中使用了body-parser 导致http中的body被序列化两次，从而使得配置代理后后端无法获取body中的数据
+        onProxyReq: function(proxyReq, req, res, options) {
+          if (req.body) {
+            const reg = new RegExp('application/json')
+            if (reg.test(proxyReq.getHeader('Content-Type'))) {
+              const bodyData = JSON.stringify(req.body)
+              proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
+              // stream the content
+              proxyReq.write(bodyData)
+            }
+          }
+        }
       }
     },
     before: require('./mock/mock-server.js')
