@@ -29,14 +29,15 @@
       <el-table-column
         prop="type"
         label="题型"
-        width="80">
+        width="70">
         <template slot-scope="scope">
-          {{ scope.row.type | convertQuestionTypeToTitle(scope.row.type) }}
+          {{ scope.row.type | convertQuestionTypeToTitle }}
         </template>
       </el-table-column>
       <el-table-column
         prop="stem"
-        label="题干">
+        label="题干"
+        show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         prop="refNum"
@@ -51,12 +52,19 @@
       <el-table-column
         prop="answer"
         label="正确答案"
-        width="120">
+        width="200"
+        show-overflow-tooltip>
+        <template slot-scope="scope">
+          {{ scope.row.answer | convertQuestionAnswer(scope.row.type) }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="createTime"
         label="创建日期"
-        width="120">
+        width="110">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template>
