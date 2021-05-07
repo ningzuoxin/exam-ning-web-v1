@@ -23,3 +23,16 @@ export function listTypes() {
     method: 'get'
   })
 }
+
+/**
+ * 添加考题
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function add(params) {
+  return request({
+    url: '/xxx/exam/question/add',
+    method: 'post',
+    data: params
+  })
+}

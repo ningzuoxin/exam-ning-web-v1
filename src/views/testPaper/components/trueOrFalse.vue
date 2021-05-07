@@ -2,22 +2,22 @@
   <div :class="{'Mt-20':paperQus}" class="W100 box-v-center">
     <div v-if="!paperQus" style="width: 80%;height: 55px;max-width: 1350px;" class="Mt-10 box-start mousePointer">
       <i class="el-icon-circle-plus normalBlue"/>
-      <div class="Ml-10 normalBlue" @click="showAddTopicPanle">添加判断题</div>
+      <div class="Ml-10 normalBlue" @click="showAddPanel">添加判断题</div>
     </div>
     <div v-show="showAddTopic" class="addJudgCss box-start align-stretch Pt-20 Pb-20 gray-dark Mb-20">
       <div style="width: 80%;" class="box-v-start ">
         <div class="box-justify Mb-16 align-stretch" style="width: 80%;">
           <div class="rest">
-            <el-input :autosize="{minRows: 2,maxRows: 4}" v-model="judgObj.stem" type="textarea" placeholder="请输入题干内容"/>
+            <el-input :autosize="{minRows: 2,maxRows: 4}" v-model="question.stem" type="textarea" placeholder="请输入题干内容"/>
           </div>
-          <div v-if="paperQus">分值：<input v-model="judgObj.score" class="scoreInput">分</div>
+          <div v-if="paperQus">分值：<input v-model="question.score" class="scoreInput">分</div>
         </div>
         <div class="box-justify Mb-16 align-stretch" style="width: 80%;">
           <div class="rest">
-            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="judgObj.analysis" type="textarea" placeholder="请输入题目解析"/>
+            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="question.analysis" type="textarea" placeholder="请输入题目解析"/>
           </div>
         </div>
-        <div v-for="(item, index) in judgObj.opitions" :key="item.id" class="box-justify Mb-16" style="width: 80%;">
+        <div v-for="(item, index) in question.options" :key="item.id" class="box-justify Mb-16" style="width: 80%;">
           <div class="rest box-start">
             <div class="box-start" style="width: 80%;">
               <div class="Mr-10 gray-medium box-start">
@@ -35,8 +35,8 @@
         </div>
         <div class="box-justify Mb-16" style="width: 80%;">
           <div class="rest box-start">
-            <div class="saveBtn box-center mousePointer" @click="addJudg">保存</div>
-            <div class="deleteBtn box-center mousePointer Ml-16" @click="clearJudg">删除</div>
+            <div class="saveBtn box-center mousePointer" @click="doAdd">保存</div>
+            <div class="deleteBtn box-center mousePointer Ml-16" @click="doClear">清除</div>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-  import Url from '@/api/url'
+  import { add } from '@/api/testPaper/question'
 
   export default {
     name: 'TrueOrFalse',
@@ -63,32 +63,26 @@
         textarea2: null,
         activeNames: ['1'],
         examQuestionList: [],
-        judgObj: {
+        question: {
           analysis: null,
           answer: null,
           stem: null,
           score: null,
           showAddTopic: false,
-          opitions: [{
+          options: [{
             isAnswer: true,
             title: '正确',
             id: 1
-          },
-            {
-              isAnswer: false,
-              title: '错误',
-              id: 2
-            }],
+          }, {
+            isAnswer: false,
+            title: '错误',
+            id: 2
+          }],
           keyWord: [],
           knowledgeType: []
         },
         showAddTopic: false,
         editIndexNow: null
-      }
-    },
-    computed: {
-      treeDataList() {
-        return this.$store.getters.chapterType
       }
     },
     watch: {
@@ -111,15 +105,15 @@
         console.log(val)
       },
       setAnswer(index) {
-        for (let i = 0; i < this.judgObj.opitions.length; i++) {
+        for (let i = 0; i < this.question.options.length; i++) {
           if (index === i) {
-            this.$set(this.judgObj.opitions[i], 'isAnswer', true)
+            this.$set(this.question.options[i], 'isAnswer', true)
           } else {
-            this.$set(this.judgObj.opitions[i], 'isAnswer', false)
+            this.$set(this.question.options[i], 'isAnswer', false)
           }
         }
       },
-      showAddTopicPanle() {
+      showAddPanel() {
         if (this.editIndexNow !== null) {
           this.$message('请先保存题目')
           return
@@ -127,120 +121,54 @@
         this.editIndexNow = 0
         this.showAddTopic = true
       },
-      addJudg() {
-        let temp = 0
-        for (let i = 0; i < this.judgObj.opitions.length; i++) {
-          if (this.judgObj.opitions[i].isAnswer === true) {
-            temp = i
+      doAdd() {
+        const stem = this.question.stem
+        if (stem === undefined || stem === '' || stem === null) {
+          this.$message('请填写题干')
+          return
+        }
+        let answerIndex = 0
+        for (let i = 0; i < this.question.options.length; i++) {
+          if (this.question.options[i].isAnswer === true) {
+            answerIndex = i
           }
         }
         const params = {
-          analysis: this.judgObj.analysis,
-          answer: temp,
-          metas: null,
+          analysis: this.question.analysis,
+          answer: answerIndex,
           score: 0,
-          stem: this.judgObj.stem,
-          type: 'TRUE_FALSE',
-          categoryId: this.$isNull(this.judgObj.knowledgeType) ? null : this.judgObj.knowledgeType[this.judgObj.knowledgeType.length - 1]
+          stem: stem,
+          type: 'true_false'
         }
-        this.$post(Url.examquestions.add, params).then(data => {
-          console.log(data)
-          this.$message.success('新增成功')
-          this.judgObj.id = data.data.id
-          this.examQuestionList.push(this.judgObj)
-          this.clearJudg()
+        add(params).then(response => {
+          if (response.code === 20000) {
+            this.msgSuccess('添加成功')
+            setTimeout(() => this.$router.push({ path: '/testPaper/listQuestion' }), 1000)
+          }
+        }).catch(function() {
         })
       },
-      clearJudg() {
-        this.judgObj = {
+      doClear() {
+        this.question = {
           analysis: null,
           answer: null,
           stem: null,
           score: null,
           showAddTopic: false,
-          opitions: [{
+          options: [{
             isAnswer: true,
             title: '对',
             id: 1
-          },
-            {
-              isAnswer: false,
-              title: '错',
-              id: 2
-            }],
+          }, {
+            isAnswer: false,
+            title: '错',
+            id: 2
+          }],
           keyWord: [],
           knowledgeType: []
         }
         this.editIndexNow = null
         this.showAddTopic = false
-      },
-      upItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        if (index === 0) {
-          return
-        }
-        var tempOption = this.examQuestionList[index - 1]
-        this.$set(this.examQuestionList, index - 1, this.examQuestionList[index])
-        this.$set(this.examQuestionList, index, tempOption)
-      },
-      downItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        if (index === this.examQuestionList.length - 1) {
-          return
-        }
-        var tempOption = this.examQuestionList[index + 1]
-        this.$set(this.examQuestionList, index + 1, this.examQuestionList[index])
-        this.$set(this.examQuestionList, index, tempOption)
-      },
-      deleteItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.$confirm('此操作将永久删除此试题, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$post(Url.examquestions.delete, { id: this.examQuestionList[index].id }).then(data => {
-            console.log(data)
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.examQuestionList.splice(index, 1)
-          })
-        }).catch(() => {
-          console.log('11')
-        })
-      },
-      editItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.editIndexNow = index
-        this.$set(this.examQuestionList[index], 'showAddTopic', true)
-      },
-      saveTopic(data) {
-        this.$set(this.examQuestionList, this.editIndexNow, data)
-        this.$emit('groupJudg', this.examQuestionList)
-        this.editIndexNow = null
-      },
-      addLastItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.judgObj.showAddTopic = true
-        this.examQuestionList.splice(index + 1, 0, this.judgObj)
-        this.editIndexNow = index + 1
       }
     }
   }

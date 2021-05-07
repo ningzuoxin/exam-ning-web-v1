@@ -2,7 +2,7 @@
   <div :class="{'Mt-20':paperQus}" class="W100 box-v-center">
     <div v-if="!paperQus" style="width: 80%;height: 55px;max-width: 1350px;" class="Mt-10 box-start mousePointer">
       <i class="el-icon-circle-plus normalBlue"/>
-      <div class="Ml-10 normalBlue" @click="showAddTopicPanle">添加填空题</div>
+      <div class="Ml-10 normalBlue" @click="showAddPanel">添加填空题</div>
     </div>
     <div v-show="showAddTopic" class="addBlankCss box-start align-stretch Pt-20 Pb-20 gray-dark Mb-20">
       <div style="width: 80%;" class="box-v-start">
@@ -12,27 +12,27 @@
               <el-button size="mini" type="primary" class="Mr-10" @click="setBlank">设为空格</el-button>
               <div>输入完整题干后，选中需要填空的文字点击“设为空格”</div>
             </div>
-            <textarea ref="textarea" v-model="blankObj.name" rows="3" class="textareaCss"/>
-            <div style="line-height: 20px;width: 90%;" class="Mb-20">效果预览：{{ blankObj.name2}}</div>
+            <textarea ref="textarea" v-model="examQuestion.name" rows="3" class="textareaCss"/>
+            <div style="line-height: 20px;width: 90%;" class="Mb-20">效果预览：{{ examQuestion.name2}}</div>
             <div v-for="(item,index) in answer" :key="index" class="box-start-wrap Mb-10">
               <div>空格{{ index + 1 }}：{{ item }}</div>
               <div class="mousePointer Ml-10 C4598E8" @click="deleteBlank(index)">取消空格</div>
             </div>
           </div>
           <div v-if="paperQus">
-            <div class="Mb-10">分值：<input v-model="blankObj.score" class="scoreInput">分</div>
-            <div>每空：<input v-model="blankObj.score" class="scoreInput">分</div>
+            <div class="Mb-10">分值：<input v-model="examQuestion.score" class="scoreInput">分</div>
+            <div>每空：<input v-model="examQuestion.score" class="scoreInput">分</div>
           </div>
         </div>
         <div class="box-justify Mb-16 align-stretch" style="width: 80%;">
           <div class="rest">
-            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="blankObj.analysis" type="textarea" placeholder="请输入题目解析"/>
+            <el-input :autosize="{ minRows: 2,maxRows: 4}" v-model="examQuestion.analysis" type="textarea" placeholder="请输入题目解析"/>
           </div>
         </div>
         <div class="box-justify Mb-16" style="width: 80%;">
           <div class="rest box-start">
-            <div class="saveBtn box-center mousePointer" @click="addBlank">保存</div>
-            <div class="deleteBtn box-center mousePointer Ml-16" @click="clearBlank">删除</div>
+            <div class="saveBtn box-center mousePointer" @click="doAdd">保存</div>
+            <div class="deleteBtn box-center mousePointer Ml-16" @click="doClear">清除</div>
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-  import Url from '@/api/url'
+  import { add } from '@/api/testPaper/question'
 
   export default {
     name: 'FillBlank',
@@ -63,7 +63,7 @@
           name: null,
           name2: null
         },
-        blankObj: {
+        examQuestion: {
           analysis: null,
           answer: null,
           stem: null,
@@ -73,7 +73,7 @@
           name2: null,
           blankAnswer: [],
           blankName: [],
-          opitions: [],
+          options: [],
           keyWord: [],
           knowledgeType: []
         },
@@ -89,11 +89,11 @@
       }
     },
     watch: {
-      'blankObj.name'(newValue, oldValue) {
+      'examQuestion.name'(newValue, oldValue) {
         if (newValue === null) {
           return
         }
-        this.blankObj.name2 = this.blankObj.name.replace(/\{{(.+?)\}}/g, '_______')
+        this.examQuestion.name2 = this.examQuestion.name.replace(/\{{(.+?)\}}/g, '_______')
       },
       blankArr: {
         handler(val, oldVal) {
@@ -113,26 +113,7 @@
       handleChange(val) {
         console.log(val)
       },
-      addOpition() {
-        this.blankObj.opitions.push({
-          isAnswer: false,
-          title: null,
-          id: new Date().getTime()
-        })
-      },
-      setAnswer(index) {
-        for (let i = 0; i < this.blankObj.opitions.length; i++) {
-          if (index === i) {
-            this.$set(this.blankObj.opitions[i], 'isAnswer', true)
-          } else {
-            this.$set(this.blankObj.opitions[i], 'isAnswer', false)
-          }
-        }
-      },
-      deleteOpition(index) {
-        this.blankObj.opitions.splice(index, 1)
-      },
-      showAddTopicPanle() {
+      showAddPanel() {
         if (this.editIndexNow !== null) {
           this.$message('请先保存题目')
           return
@@ -140,28 +121,25 @@
         this.editIndexNow = 0
         this.showAddTopic = true
       },
-      addBlank() {
+      doAdd() {
         const params = {
-          analysis: this.blankObj.analysis,
+          analysis: this.examQuestion.analysis,
           answer: JSON.stringify(this.answer),
-          metas: JSON.stringify(this.blankObj.blankName),
+          metas: JSON.stringify(this.examQuestion.blankName),
           score: 0,
-          stem: this.blankObj.name2.replace(/_______/g, '{{}}'),
-          type: 'FILL_BLANK',
-          categoryId: this.$isNull(this.blankObj.knowledgeType) ? null : this.blankObj.knowledgeType[this.blankObj.knowledgeType.length - 1]
+          stem: this.examQuestion.name2.replace(/_______/g, '{{}}'),
+          type: 'fill_blank'
         }
-        this.$post(Url.examquestions.add, params).then(data => {
-          console.log(data)
-          this.blankObj.id = data.data.id
-          this.blankObj.answer = JSON.parse(data.data.answer)
-          this.blankObj.name2 = data.data.stem.replace(/{{}}/g, '_______')
-          this.$message.success('新增成功')
-          this.examQuestionList.push(this.blankObj)
-          this.clearBlank()
+        add(params).then(response => {
+          if (response.code === 20000) {
+            this.msgSuccess('添加成功')
+            setTimeout(() => this.$router.push({ path: '/testPaper/listQuestion' }), 1000)
+          }
+        }).catch(function() {
         })
       },
-      clearBlank() {
-        this.blankObj = {
+      doClear() {
+        this.examQuestion = {
           analysis: null,
           answer: null,
           stem: null,
@@ -171,97 +149,13 @@
           name2: null,
           blankAnswer: [],
           blankName: [],
-          opitions: [],
+          options: [],
           keyWord: [],
           knowledgeType: []
         }
         this.answer = []
         this.editIndexNow = null
         this.showAddTopic = false
-      },
-      upItemOpition(index) {
-        if (index === 0) {
-          return
-        }
-        var tempOption = this.blankObj.opitions[index - 1]
-        this.$set(this.blankObj.opitions, index - 1, this.blankObj.opitions[index])
-        this.$set(this.blankObj.opitions, index, tempOption)
-      },
-      downItemOpition(index) {
-        if (index === this.blankObj.opitions.length - 1) {
-          return
-        }
-        var tempOption = this.blankObj.opitions[index + 1]
-        this.$set(this.blankObj.opitions, index + 1, this.blankObj.opitions[index])
-        this.$set(this.blankObj.opitions, index, tempOption)
-      },
-      upItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        if (index === 0) {
-          return
-        }
-        var tempOption = this.examQuestionList[index - 1]
-        this.$set(this.examQuestionList, index - 1, this.examQuestionList[index])
-        this.$set(this.examQuestionList, index, tempOption)
-      },
-      downItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        if (index === this.examQuestionList.length - 1) {
-          return
-        }
-        var tempOption = this.examQuestionList[index + 1]
-        this.$set(this.examQuestionList, index + 1, this.examQuestionList[index])
-        this.$set(this.examQuestionList, index, tempOption)
-      },
-      deleteItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.$confirm('此操作将永久删除此试题, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$post(Url.examquestions.delete, { id: this.examQuestionList[index].id }).then(data => {
-            console.log(data)
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.examQuestionList.splice(index, 1)
-          })
-        }).catch(() => {
-          console.log('11')
-        })
-      },
-      editItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.editIndexNow = index
-        this.$set(this.examQuestionList[index], 'showAddTopic', true)
-      },
-      saveTopic(data) {
-        this.$set(this.examQuestionList, this.editIndexNow, data)
-        this.$emit('groupBlank', this.examQuestionList)
-        this.editIndexNow = null
-      },
-      addLastItem(index) {
-        if (this.editIndexNow !== null) {
-          this.$message('请先保存题目')
-          return
-        }
-        this.blankObj.showAddTopic = true
-        this.examQuestionList.splice(index + 1, 0, this.blankObj)
-        this.editIndexNow = index + 1
       },
       setBlank() {
         const selectionStart = this.$refs.textarea.selectionStart
@@ -275,18 +169,18 @@
           this.$message('不允许这么操作，请先取消原空格')
           return
         }
-        this.blankObj.name = this.blankObj.name.slice(0, selectionStart) + '{{' + this.blankObj.name.slice(selectionStart)
-        this.blankObj.name = this.blankObj.name.slice(0, selectionEnd + 2) + '}}' + this.blankObj.name.slice(selectionEnd + 2)
+        this.examQuestion.name = this.examQuestion.name.slice(0, selectionStart) + '{{' + this.examQuestion.name.slice(selectionStart)
+        this.examQuestion.name = this.examQuestion.name.slice(0, selectionEnd + 2) + '}}' + this.examQuestion.name.slice(selectionEnd + 2)
         this.answer = []
-        this.answer = this.$getBracketStr(this.blankObj.name)
+        this.answer = this.$getBracketStr(this.examQuestion.name)
         this.$refs.textarea.selectionStart = 0
         this.$refs.textarea.selectionEnd = 0
       },
       deleteBlank(index) { // 撤销空格操作
         const tempStr = this.answer[index]
-        var re = new RegExp('{{' + tempStr + '}}', 'g')
-        this.blankObj.name = this.blankObj.name.replace(re, tempStr)
-        this.blankObj.name2 = this.blankObj.name.replace(/\{{(.+?)\}}/g, '_______')
+        const re = new RegExp('{{' + tempStr + '}}', 'g')
+        this.examQuestion.name = this.examQuestion.name.replace(re, tempStr)
+        this.examQuestion.name2 = this.examQuestion.name.replace(/\{{(.+?)\}}/g, '_______')
         this.answer.splice(index, 1)
       }
     }
