@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="box-start filter-container">
-      <el-select v-model="QusListQuery.type" placeholder="请选择试题类型">
-        <el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value"/>
+      <el-select v-model="query.type" placeholder="请选择试题类型">
+        <el-option v-for="(item,index) in types" :label="item.title" :value="item.type" :key="index"/>
       </el-select>
-      <el-input v-model="QusListQuery.searchText" class="Mr-16 Ml-20 rest" placeholder="关键字" prefix-icon="el-icon-search"/>
-      <el-button type="primary" class="searchButton" style="background-color: #3D53E6;" @click="handleFilter">搜索</el-button>
+      <el-input v-model="query.keyWord" class="Mr-16 Ml-20 rest" placeholder="关键字" prefix-icon="el-icon-search"/>
+      <el-button type="primary" class="searchButton" style="background-color: #3D53E6;" @click="getList">搜索</el-button>
     </div>
     <el-table
       ref="table"
@@ -27,27 +27,33 @@
         label="题型"
         prop="type"
         width="100">
+        <template slot-scope="scope">
+          {{ scope.row.type | convertQuestionTypeToTitle }}
+        </template>
       </el-table-column>
       <el-table-column
         label="题干"
-        prop="stem">
+        prop="stem"
+        show-overflow-tooltip>
       </el-table-column>
       <el-table-column
         label="创建时间"
         prop="createTime"
         width="130">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
+        </template>
       </el-table-column>
     </el-table>
 
-    <el-pagination
-      v-if="QusListQuery.total >= 0"
-      :current-page="QusListQuery.currentPage"
-      :page-size="QusListQuery.pageSize"
-      :total="QusListQuery.total"
-      style="margin-top: 20px;text-align: center;"
-      layout="total, prev, pager, next, sizes, jumper"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizesChange"/>
+    <!--分页组件-->
+    <pagination
+      v-show="query.total>0"
+      :total="query.total"
+      :page.sync="query.currentPage"
+      :limit.sync="query.pageSize"
+      @pagination="getList"
+    />
 
     <div class="W100 scoreContainer">
       <div class="box-start Mb-20">
@@ -69,10 +75,7 @@
         <div class="itemCss">
           <div class="Mb-20">单选题</div>
           <div class="Mb-20">{{ scoreObj.singleNum }}</div>
-          <div class="Mb-20">
-            <input v-model.number="scoreObj.singleScore" type="text" class="scoreInput">
-          </div>
-
+          <div class="Mb-20"><input v-model.number="scoreObj.singleScore" type="text" class="scoreInput"></div>
         </div>
         <div class="itemCss">
           <div class="Mb-20">多选题</div>
@@ -103,7 +106,7 @@
 </template>
 <script>
   import Url from '@/api/url'
-  import { listQuestion } from '@/api/testPaper/question'
+  import { listQuestion, listTypes } from '@/api/testPaper/question'
 
   export default {
     name: 'SelectQuestion',
@@ -124,6 +127,14 @@
     data() {
       return {
         tableData: [],
+        types: [],
+        query: {
+          type: '',
+          keyWord: '',
+          currentPage: 1,
+          pageSize: 10,
+          total: 0
+        },
         QusListQuery: {
           currentPage: 1,
           creator: null,
@@ -142,32 +153,6 @@
         multipleSelectionAll: [], // 所有选中的数据包含跨页数据
         selection: [], // 当前页选中的数据
         idKey: 'id', // 标识列表数据中每一行的唯一键的名称(需要按自己的数据改一下)
-        options: [{
-          value: '内部讲师',
-          label: '内部讲师'
-        }, {
-          value: '外部讲师',
-          label: '外部讲师'
-        }, {
-          value: '认证讲师',
-          label: '认证讲师'
-        }],
-        options2: [{
-          value: 'choice',
-          label: '单选题'
-        }, {
-          value: 'choice_multi',
-          label: '多选题'
-        }, {
-          value: 'true_false',
-          label: '判断题'
-        }, {
-          value: 'fill_blank',
-          label: '填空题'
-        }, {
-          value: 'question',
-          label: '问答题'
-        }],
         value: null,
         searchValue: null,
         searchValue2: null,
@@ -249,6 +234,7 @@
       }
     },
     created() {
+      this.getQuestionType()
       this.getList()
     },
     methods: {
@@ -265,19 +251,25 @@
           type: null
         }
       },
+      getQuestionType() {
+        listTypes().then(response => {
+          this.types = response.data
+        }).catch(function() {
+        })
+      },
       getList() {
-        this.tableData = listQuestion()
-        // this.$post(Url.examquestions.query, this.QusListQuery).then(data => {
-        //   console.log(data)
-        //   const result = data.data
-        //   this.tableData = result.records
-        //   this.QusListQuery.total = result.total
-        //   this.QusListQuery.currentPage = result.current
-        //   this.QusListQuery.pageSize = result.size
-        //   setTimeout(() => {
-        //     this.setSelectRow()
-        //   }, 200)
-        // })
+        const params = {
+          'type': this.query.type,
+          'keyword': this.query.keyWord,
+          'pNum': this.query.currentPage,
+          'pSize': this.query.pageSize
+        }
+        listQuestion(params).then(response => {
+          const data = response.data
+          this.query.currentPage = data.current
+          this.query.total = data.total
+          this.tableData = data.records
+        })
       },
       handleFilter() {
         this.QusListQuery.currentPage = 1

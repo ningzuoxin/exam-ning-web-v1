@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" label-width="80px">
       <el-form-item label="试卷类型">
-        <el-select placeholder="请选择试卷类型">
+        <el-select placeholder="请选择试卷类型" v-model="form.desc">
           <el-option label="正式考试" value="shanghai"/>
           <el-option label="模拟考试" value="beijing"/>
           <el-option label="刷题学习" value="beijing"/>
