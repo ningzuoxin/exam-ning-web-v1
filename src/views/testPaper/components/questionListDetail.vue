@@ -8,7 +8,7 @@
       align="left"
       type="index"
       label="序号"
-      width="25">
+      width="40">
     </el-table-column>
     <el-table-column
       prop="stem"
