@@ -14,12 +14,10 @@
       height="398"
       size="mini"
       style="min-width: 100%"
-      @row-click="choseRow"
       @select="selectCheck"
-      @select-all="selectCheckAll"
+      @select-all="selectCheck"
       @selection-change="handleSelectionChange">
       <el-table-column
-        v-if="isCheck"
         type="selection"
         align="center"
         width="55"/>
@@ -57,13 +55,7 @@
 
     <div class="W100 scoreContainer">
       <div class="box-start Mb-20">
-        <div>选择：</div>
-        <div class="mousePointer">全选</div>
-        <div>-</div>
-        <div class="mousePointer">取消</div>
-      </div>
-      <div class="box-start Mb-20">
-        <div class="Mr-20">当前已选中：{{ multipleSelectionAll.length }}道题目</div>
+        <div class="Mr-20">当前已选中：{{ allSelected.length }}道题目</div>
         <div>共计{{ allScore }}分</div>
       </div>
       <div class="box-start">
@@ -100,26 +92,17 @@
       </div>
     </div>
     <div class="box-end">
-      <el-button v-if="isCheck" type="primary" @click="sureSelect">确定</el-button>
+      <el-button type="primary" @click="sureSelect">确定</el-button>
     </div>
   </div>
 </template>
 <script>
-  import Url from '@/api/url'
   import { listQuestion, listTypes } from '@/api/testPaper/question'
 
   export default {
     name: 'SelectQuestion',
     props: {
-      selecttype: {
-        type: String,
-        default: null
-      },
-      dateStamp: {
-        type: Number,
-        default: null
-      },
-      selectData: {
+      selectedQuestions: {
         type: Array,
         default: null
       }
@@ -135,27 +118,10 @@
           pageSize: 10,
           total: 0
         },
-        QusListQuery: {
-          currentPage: 1,
-          creator: null,
-          search: null,
-          pageSize: Url.pageSize,
-          categoryId: null,
-          total: null,
-          searchText: null,
-          type: null
-        },
-        selectType: 'radio',
-        isShowChapter: false,
-        isShowTopicLook: false,
-        questionType: 1,
-        topicDetail: null,
-        multipleSelectionAll: [], // 所有选中的数据包含跨页数据
-        selection: [], // 当前页选中的数据
-        idKey: 'id', // 标识列表数据中每一行的唯一键的名称(需要按自己的数据改一下)
-        value: null,
-        searchValue: null,
-        searchValue2: null,
+        // 所有选中的数据
+        allSelected: [],
+        // 当前选中的数据
+        currentSelected: [],
         scoreObj: {
           singleScore: 0,
           moreScore: 0,
@@ -172,18 +138,9 @@
       }
     },
     computed: {
-      isCheck() {
-        if (this.selecttype === 'radio') {
-          return false
-        } else {
-          return true
-        }
-      },
-      treeDataList() {
-        return this.$store.getters.chapterType
-      },
       allScore() {
-        const temp = this.scoreObj.singleScore * this.scoreObj.singleNum +
+        const temp =
+          this.scoreObj.singleScore * this.scoreObj.singleNum +
           this.scoreObj.moreScore * this.scoreObj.moreNum +
           this.scoreObj.judgScore * this.scoreObj.judgNum +
           this.scoreObj.blankScore * this.scoreObj.blankNum +
@@ -192,24 +149,7 @@
       }
     },
     watch: {
-      dateStamp(val) {
-        this.multipleSelectionAll = []
-        this.selection = []
-        this.scoreObj = {
-          singleScore: 0,
-          moreScore: 0,
-          judgScore: 0,
-          blankScore: 0,
-          answerScore: 0,
-          singleNum: 0,
-          moreNum: 0,
-          judgNum: 0,
-          blankNum: 0,
-          answerNum: 0
-        }
-        this.getList()
-      },
-      multipleSelectionAll: {
+      allSelected: {
         handler(val) {
           this.scoreObj.singleNum = 0
           this.scoreObj.moreNum = 0
@@ -234,23 +174,11 @@
       }
     },
     created() {
+      this.allSelected = this.selectedQuestions
       this.getQuestionType()
       this.getList()
     },
     methods: {
-      resetFilter() {
-        const that = this
-        that.QusListQuery = {
-          currentPage: 1,
-          creator: null,
-          search: null,
-          pageSize: Url.pageSize,
-          categoryId: null,
-          total: null,
-          searchText: null,
-          type: null
-        }
-      },
       getQuestionType() {
         listTypes().then(response => {
           this.types = response.data
@@ -269,20 +197,11 @@
           this.query.currentPage = data.current
           this.query.total = data.total
           this.tableData = data.records
+          // 200毫秒后设置选中
+          setTimeout(() => {
+            this.setSelected()
+          }, 200)
         })
-      },
-      handleFilter() {
-        this.QusListQuery.currentPage = 1
-        this.getList()
-      },
-      choseRow(row, event, column) {
-        if (this.isCheck === true) {
-          return
-        }
-        console.log(row)
-        console.log(event)
-        console.log(column)
-        this.$emit('giveTopic', row)
       },
       sureSelect() {
         if (this.scoreObj.singleNum !== 0) {
@@ -315,121 +234,81 @@
             return
           }
         }
-        this.getAllSelectionData()
+        this.getAllSelected()
         const tempObj = {
-          multipleSelectionAll: this.$copy(this.multipleSelectionAll),
+          allSelected: JSON.stringify(this.allSelected),
           scoreObj: this.scoreObj
         }
-        this.$emit('giveTopic', tempObj)
+        this.$emit('getSelectedQuestion', tempObj)
       },
-      selectCheck(selection, row) {
-        this.selection = selection
-        this.getAllSelectionData()
-        console.log(selection, row)
+      selectCheck(selection) {
+        this.currentSelected = selection
+        this.getAllSelected()
       },
-      showChapter() {
-        this.isShowChapter = true
-      },
-      giveChapter(data) {
-        this.isShowChapter = false
-        this.QusListQuery.chapterId = data.id
-        this.QusListQuery.chapterName = data.name
-        console.log(data)
-      },
-      selectCheckAll(selection) {
-        this.selection = selection
-        this.getAllSelectionData()
-      },
-      // 记忆多选方法
-      // 设置选中的方法
-      setSelectRow() {
-        if (this.selecttype === 'radio') {
+      // 设置选中
+      setSelected() {
+        if (!this.allSelected || this.allSelected <= 0) {
           return
         }
-        if (!this.multipleSelectionAll || this.multipleSelectionAll.length <= 0) {
-          return
-        }
-        // 标识当前行的唯一键的名称
-        const idKey = this.idKey
-        const selectAllIds = []
-        this.multipleSelectionAll.forEach(row => {
-          selectAllIds.push(row[idKey])
+
+        const allSelectedIdArray = []
+        this.allSelected.forEach(row => {
+          allSelectedIdArray.push(row.id)
         })
+
         this.$refs.table.clearSelection()
-        for (var i = 0; i < this.tableData.length; i++) {
-          if (selectAllIds.indexOf(this.tableData[i][idKey]) >= 0) {
-            // 设置选中，记住table组件需要使用ref="table"
+        for (let i = 0; i < this.tableData.length; i++) {
+          if (allSelectedIdArray.indexOf(this.tableData[i]['id']) >= 0) {
             this.$refs.table.toggleRowSelection(this.tableData[i], true)
           }
         }
       },
-      // 记忆选择核心方法
-      changePageCoreRecordData() {
-        // 标识当前行的唯一键的名称
-        if (this.selecttype === 'radio') {
-          return
-        }
-        const idKey = this.idKey
+      handleSelectionChange(selection) {
+        this.currentSelected = selection
+      },
+      // 获取所有选中的数据
+      getAllSelected() {
         const that = this
-        // 如果总记忆中还没有选择的数据，那么就直接取当前页选中的数据，不需要后面一系列计算
-        if (this.multipleSelectionAll.length <= 0) {
-          this.multipleSelectionAll = this.selection
+        // 首次选择，所有选中数据就是当前选中数据
+        if (this.allSelected.length <= 0) {
+          this.allSelected = this.currentSelected
           return
         }
-        // 总选择里面的key集合
-        const selectAllIds = []
-        this.multipleSelectionAll.forEach(row => {
-          selectAllIds.push(row[idKey])
+
+        // 所有选中的id
+        const allSelectedIdArray = []
+        this.allSelected.forEach(row => {
+          allSelectedIdArray.push(row.id)
         })
-        const selectIds = []
-        // 获取当前页选中的id
-        this.selection.forEach(row => {
-          selectIds.push(row[idKey])
-          // 如果总选择里面不包含当前页选中的数据，那么就加入到总选择集合里
-          if (selectAllIds.indexOf(row[idKey]) < 0) {
-            that.multipleSelectionAll.push(row)
+
+        // 当前选中的id
+        const currentSelectedIdArray = []
+        this.currentSelected.forEach(row => {
+          currentSelectedIdArray.push(row.id)
+          if (allSelectedIdArray.indexOf(row.id) === -1) {
+            that.allSelected.push(row)
+            allSelectedIdArray.push(row.id)
           }
         })
-        const noSelectIds = []
-        // 得到当前页没有选中的id
+
+        // 当前没有选中的id
+        const noSelectedIdArray = []
         this.tableData.forEach(row => {
-          if (selectIds.indexOf(row[idKey]) < 0) {
-            noSelectIds.push(row[idKey])
+          if (currentSelectedIdArray.indexOf(row.id) === -1) {
+            noSelectedIdArray.push(row.id)
           }
         })
-        noSelectIds.forEach(id => {
-          if (selectAllIds.indexOf(id) >= 0) {
-            for (let i = 0; i < that.multipleSelectionAll.length; i++) {
-              if (that.multipleSelectionAll[i][idKey] === id) {
-                // 如果总选择中有未被选中的，那么就删除这条
-                that.multipleSelectionAll.splice(i, 1)
+
+        noSelectedIdArray.forEach(id => {
+          if (allSelectedIdArray.indexOf(id) >= 0) {
+            for (let i = 0; i < that.allSelected.length; i++) {
+              if (that.allSelected[i].id === id) {
+                that.allSelected.splice(i, 1)
                 break
               }
             }
           }
         })
-      },
-      handleCurrentChange(value) {
-        // 改变页的时候调用一次
-        this.changePageCoreRecordData()
-        this.QusListQuery.currentPage = value
-        this.getList()
-      },
-      handleSizesChange(value) {
-        // 改变页的时候调用一次
-        this.changePageCoreRecordData()
-        this.QusListQuery.pageSize = value
-        this.getList()
-      },
-      handleSelectionChange(selection) {
-        this.selection = selection
-        this.getAllSelectionData()
-      },
-      // 得到选中的所有数据
-      getAllSelectionData() {
-        // 再执行一次记忆勾选数据匹配，目的是为了在当前页操作勾选后直接获取选中数据
-        this.changePageCoreRecordData()
-        console.log(this.multipleSelectionAll)
       }
     }
   }
