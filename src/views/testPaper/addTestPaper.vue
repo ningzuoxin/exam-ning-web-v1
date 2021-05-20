@@ -3,9 +3,7 @@
     <el-form ref="form" label-width="80px">
       <el-form-item label="试卷类型">
         <el-select placeholder="请选择试卷类型" v-model="form.type">
-          <el-option label="平时练习" value="training"/>
-          <el-option label="模拟考试" value="mock"/>
-          <el-option label="正式考试" value="formal"/>
+          <el-option :label="item.title" :value="item.type" v-for="(item,index) in types" :key="index"/>
         </el-select>
       </el-form-item>
       <el-form-item label="试卷名称">
@@ -46,6 +44,7 @@
 <script>
   import SelectQuestion from '@/components/SelectQuestion'
   import QuestionListDetail from './components/questionListDetail'
+  import { listTypes } from '@/api/testPaper/test-paper'
 
   export default {
     name: 'AddTestPaper',
@@ -77,7 +76,8 @@
           limitedTime: 30,
           // 及格分
           passedScore: 60
-        }
+        },
+        types: []
       }
     },
     computed: {
@@ -96,6 +96,9 @@
       questionLabel() {
         return '问答题（' + this.questionQuestions.length + '）'
       }
+    },
+    created() {
+      this.getTestPaperTypes()
     },
     methods: {
       onSubmit() {
@@ -146,6 +149,12 @@
         this.trueFalseScore = Number(data.scoreObj.judgScore)
         this.fillBlankScore = Number(data.scoreObj.blankScore)
         this.questionScore = Number(data.scoreObj.answerScore)
+      },
+      getTestPaperTypes() {
+        listTypes().then(response => {
+          this.types = response.data
+        }).catch(function() {
+        })
       }
     }
   }
