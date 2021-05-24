@@ -1,21 +1,21 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input placeholder="Title" style="width: 200px;" class="filter-item"/>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search">
+      <el-select v-model="query.type" placeholder="请选择试卷类型" class="filter-item">
+        <el-option v-for="(item,index) in types" :label="item.title" :value="item.type" :key="index"/>
+      </el-select>
+      <el-input placeholder="Title" style="width: 200px;margin-left: 5px;" class="filter-item"/>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="getList">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="add()">
         添加
-      </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-download">
-        导出
       </el-button>
     </div>
 
     <el-table
       :data="tableData"
-      height="85%"
+      height="400px"
       border
       style="width: 100%">
       <el-table-column
@@ -24,23 +24,45 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
+        prop="type"
+        label="试卷类型"
+        width="100">
+        <template slot-scope="scope">
+          {{ scope.row.type | convertTestPaperTypeToTitle }}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        prop="name"
+        label="试卷名称"
+        show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column
+        prop="totalScore"
+        label="总分"
+        width="60">
+      </el-table-column>
+      <el-table-column
+        prop="passedScore"
+        label="及格分"
+        width="80">
+      </el-table-column>
+      <el-table-column
+        prop="limitedTime"
+        label="限时（秒）"
+        width="100">
       </el-table-column>
       <el-table-column
         prop="date"
         label="日期"
-        width="180">
+        width="110">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
         <template>
           <el-button type="primary" size="mini">
-            修改
+            预览
           </el-button>
           <el-button size="mini" type="success">
             发布
@@ -52,63 +74,62 @@
       </el-table-column>
     </el-table>
 
-    <div style="text-align: right;margin-top: 15px;">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000">
-      </el-pagination>
-    </div>
+    <pagination
+      v-show="query.total>0"
+      :total="query.total"
+      :page.sync="query.currentPage"
+      :limit.sync="query.pageSize"
+      @pagination="getList"
+    />
 
   </div>
 </template>
 
 <script>
+  import { listTypes, listTestPaper } from '@/api/testPaper/test-paper'
+
   export default {
     name: 'ListTestPaper',
     data() {
       return {
-        tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        query: {
+          type: '',
+          keyWord: '',
+          currentPage: 1,
+          pageSize: 10,
+          total: 0
+        },
+        tableData: [],
+        types: []
+      }
+    },
+    created() {
+      this.getTestPaperTypes()
+      this.getList()
+    },
+    methods: {
+      add() {
+        this.$router.push({ path: '/testPaper/addTestPaper' })
+      },
+      getTestPaperTypes() {
+        listTypes().then(response => {
+          this.types = response.data
+        }).catch(function() {
+        })
+      },
+      getList() {
+        const params = {
+          'type': this.query.type,
+          'keyword': this.query.keyWord,
+          'pNum': this.query.currentPage,
+          'pSize': this.query.pageSize
+        }
+        listTestPaper(params).then(response => {
+          const data = response.data
+          this.query.currentPage = data.current
+          this.query.total = data.total
+          this.tableData = data.records
+        })
       }
     }
   }

@@ -23,3 +23,16 @@ export function add(params) {
     data: params
   })
 }
+
+/**
+ * 查询试卷列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listTestPaper(query) {
+  return request({
+    url: '/xxx/exam/testPaper/page',
+    method: 'get',
+    params: query
+  })
+}

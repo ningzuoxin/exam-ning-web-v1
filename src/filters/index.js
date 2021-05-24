@@ -8,6 +8,23 @@ export function convert(num) {
 }
 
 /**
+ * 将试卷类型转换为中文
+ * @param type
+ * @returns {string}
+ */
+export function convertTestPaperTypeToTitle(type) {
+  let title = ''
+  if (type === 'training') {
+    title = '日常练习'
+  } else if (type === 'mock') {
+    title = '模拟考试'
+  } else if (type === 'formal') {
+    title = '正式考试'
+  }
+  return title
+}
+
+/**
  * 将题型转换为中文
  * @param type
  * @returns {string}
