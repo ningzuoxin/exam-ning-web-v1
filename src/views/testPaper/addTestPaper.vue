@@ -2,18 +2,18 @@
   <div class="app-container">
     <el-form ref="form" label-width="80px">
       <el-form-item label="试卷类型">
-        <el-select placeholder="请选择试卷类型" v-model="form.type">
+        <el-select placeholder="请选择试卷类型" v-model="examTestPaperModel.type">
           <el-option :label="item.title" :value="item.type" v-for="(item,index) in types" :key="index"/>
         </el-select>
       </el-form-item>
       <el-form-item label="试卷名称">
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="examTestPaperModel.name"></el-input>
       </el-form-item>
       <el-form-item label="限时">
-        <el-input v-model="form.limitedTime"></el-input>
+        <el-input v-model="examTestPaperModel.limitedTime"></el-input>
       </el-form-item>
       <el-form-item label="及格分">
-        <el-input v-model="form.passedScore"></el-input>
+        <el-input v-model="examTestPaperModel.passedScore"></el-input>
       </el-form-item>
       <el-form-item label="选择试题">
         <el-button type="primary" @click="showDialog">选择试题</el-button>
@@ -44,7 +44,7 @@
 <script>
   import SelectQuestion from '@/components/SelectQuestion'
   import QuestionListDetail from './components/questionListDetail'
-  import { listTypes } from '@/api/testPaper/test-paper'
+  import { listTypes, add } from '@/api/testPaper/test-paper'
 
   export default {
     name: 'AddTestPaper',
@@ -69,13 +69,16 @@
         // 问答题
         questionQuestions: [],
         questionScore: 0,
-        form: {
+        examTestPaperModel: {
           type: '',
           name: '',
           // 限时
           limitedTime: 30,
           // 及格分
-          passedScore: 60
+          passedScore: 60,
+          totalScore: 0,
+          itemCount: 0,
+          examTestPaperItems: []
         },
         types: []
       }
@@ -102,7 +105,47 @@
     },
     methods: {
       onSubmit() {
-        alert(JSON.stringify(this.form))
+        const type = this.examTestPaperModel.type
+        if (type === undefined || type === '' || type === null) {
+          this.$message('请选择试卷类型')
+          return
+        }
+
+        const name = this.examTestPaperModel.name
+        if (name === undefined || name === '' || name === null) {
+          this.$message('请填写试卷名称')
+          return
+        }
+
+        this.examTestPaperModel.totalScore =
+          this.choiceScore * this.choiceQuestions.length +
+          this.choiceMultiScore * this.choiceMultiQuestions.length +
+          this.fillBlankScore * this.fillBlankQuestions.length +
+          this.trueFalseScore * this.trueFalseQuestions.length +
+          this.questionScore * this.questionQuestions.length
+
+        this.examTestPaperModel.itemCount = this.testPaperQuestions.length
+        this.examTestPaperModel.examTestPaperItems = this.testPaperQuestions.map(question => {
+          let score = 0
+          if (question.type === 'choice') { score = this.choiceScore }
+          if (question.type === 'choice_multi') { score = this.choiceMultiScore }
+          if (question.type === 'fill_blank') { score = this.fillBlankScore }
+          if (question.type === 'true_false') { score = this.trueFalseScore }
+          if (question.type === 'question') { score = this.questionScore }
+
+          return {
+            questionId: question.id,
+            questionType: question.type,
+            score: score
+          }
+        })
+        add(this.examTestPaperModel).then(response => {
+          if (response.code === 20000) {
+            this.msgSuccess('添加成功')
+            // setTimeout(() => this.$router.push({ path: '/testPaper/listQuestion' }), 1000)
+          }
+        }).catch(function() {
+        })
       },
       onCancel() {
         return {
@@ -124,11 +167,16 @@
           // 问答题
           questionQuestions: [],
           questionScore: 0,
-          form: {
+          examTestPaperModel: {
             type: '',
             name: '',
-            limitedTime: 0,
-            passedScore: 0
+            // 限时
+            limitedTime: 30,
+            // 及格分
+            passedScore: 60,
+            totalScore: 0,
+            itemCount: 0,
+            examTestPaperItems: []
           }
         }
       },

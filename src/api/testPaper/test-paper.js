@@ -10,3 +10,16 @@ export function listTypes() {
     method: 'get'
   })
 }
+
+/**
+ * 添加试卷
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function add(params) {
+  return request({
+    url: '/xxx/exam/testPaper/add',
+    method: 'post',
+    data: params
+  })
+}
