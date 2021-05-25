@@ -60,16 +60,10 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
-        <template>
-          <el-button type="primary" size="mini">
-            预览
-          </el-button>
-          <el-button size="mini" type="success">
-            发布
-          </el-button>
-          <el-button size="mini" type="danger">
-            删除
-          </el-button>
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="preview(scope.row.id)">预览</el-button>
+          <el-button size="mini" type="success">发布</el-button>
+          <el-button size="mini" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -129,6 +123,12 @@
           this.query.currentPage = data.current
           this.query.total = data.total
           this.tableData = data.records
+        })
+      },
+      preview(id) {
+        this.$router.push({
+          path: '/testPaper/previewTestPaper',
+          query: { id: id }
         })
       }
     }

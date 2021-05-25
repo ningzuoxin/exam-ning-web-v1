@@ -36,3 +36,16 @@ export function listTestPaper(query) {
     params: query
   })
 }
+
+/**
+ * 预览试卷
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function preview(query) {
+  return request({
+    url: '/xxx/exam/testPaper/preview',
+    method: 'get',
+    params: query
+  })
+}

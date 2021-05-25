@@ -442,3 +442,12 @@
   font-weight: 600;
   cursor: pointer
 }
+
+.size-header {
+  font-size: 20px
+}
+
+/*背景色*/
+.bg-white {
+  background-color: #fff;
+}

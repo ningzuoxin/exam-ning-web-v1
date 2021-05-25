@@ -209,6 +209,13 @@ export const constantRoutes = [
         meta: { title: '添加试卷', icon: 'el-icon-document-add' }
       },
       {
+        path: 'previewTestPaper',
+        name: 'PreviewTestPaper',
+        component: () => import('@/views/testPaper/previewTestPaper'),
+        meta: { title: '预览试卷', level: 2, noCache: true },
+        hidden: true
+      },
+      {
         path: 'listQuestion',
         name: 'ListQuestion',
         component: () => import('@/views/testPaper/listQuestion'),
@@ -216,10 +223,10 @@ export const constantRoutes = [
       },
       {
         path: 'addQuestion',
-        component: () => import('@/views/testPaper/addQuestion'),
         name: 'AddQuestion',
-        hidden: true,
-        meta: { title: '添加试题', level: 2, noCache: true }
+        component: () => import('@/views/testPaper/addQuestion'),
+        meta: { title: '添加试题', level: 2, noCache: true },
+        hidden: true
       }
     ]
   },
