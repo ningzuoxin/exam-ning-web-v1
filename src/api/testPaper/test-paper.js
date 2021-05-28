@@ -49,3 +49,16 @@ export function preview(query) {
     params: query
   })
 }
+
+/**
+ * 查询考试列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listExam(query) {
+  return request({
+    url: '/xxx/exam/testPaper/listExam',
+    method: 'get',
+    params: query
+  })
+}

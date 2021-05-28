@@ -447,6 +447,10 @@
   font-size: 20px
 }
 
+.size-large {
+  font-size: 16px;
+}
+
 /*背景色*/
 .bg-white {
   background-color: #fff;
