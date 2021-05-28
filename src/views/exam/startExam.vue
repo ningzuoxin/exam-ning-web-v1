@@ -34,7 +34,7 @@
           <div class="outlineBody">
             <div class="gray-medium size-large box-center" style="margin-top:8px;">剩余时间</div>
             <div class="box-center countdown">
-              {{ limitedTime }}
+              {{ limitedTime | countdownFilter }}
             </div>
             <div class="gray-medium size-large Mt-20 Mb-20">答题卡</div>
             <div class="box-start-wrap Mb-30" style="max-height:700px;overflow-y:auto;">
@@ -110,11 +110,17 @@
         fillBlankQuestions: [],
         // 问答题
         questionQuestions: [],
+        // 倒计时定时器
+        countdown: null,
         overData: true
       }
     },
     created() {
       this.preview()
+    },
+    beforeDestroy() {
+      alert('清除定时器，并且提交试卷')
+      window.clearInterval(this.countdown)
     },
     methods: {
       preview() {
@@ -163,7 +169,25 @@
             question.score = item.score
             return question
           })
+          // 倒计时开始
+          this.countdown = window.setInterval(this.countdownTime, 1000)
         })
+      },
+      // 倒计时
+      countdownTime() {
+        this.limitedTime--
+        if (this.limitedTime === 0) {
+          window.clearInterval(this.countdown)
+          // 倒计时结束必须交卷
+          alert('时间到，请交卷')
+          // this.upTest()
+        } else if (this.limitedTime === 900) {
+          this.$notify({
+            title: '注意',
+            message: '仅剩最后15分钟',
+            type: 'warning'
+          })
+        }
       },
       changeTypeItem(type) {
         this.typeIndex = type
