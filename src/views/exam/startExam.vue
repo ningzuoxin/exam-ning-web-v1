@@ -34,7 +34,7 @@
           <div class="outlineBody">
             <div class="gray-medium size-large box-center" style="margin-top:8px;">剩余时间</div>
             <div class="box-center countdown">
-              {{ limitedTime | countdownFilter }}
+              {{ retainTime | countdownFilter }}
             </div>
             <div class="gray-medium size-large Mt-20 Mb-20">答题卡</div>
             <div class="box-start-wrap Mb-30" style="max-height:700px;overflow-y:auto;">
@@ -73,7 +73,7 @@
   import previewTrueFalseList from '@/views/testPaper/components/preview/previewTrueFalseList'
   import previewFillBlankList from '@/views/testPaper/components/preview/previewFillBlankList'
   import previewQuestionList from '@/views/testPaper/components/preview/previewQuestionList'
-  import { preview } from '@/api/testPaper/test-paper'
+  import { preview, submit } from '@/api/testPaper/test-paper'
 
   export default {
     name: 'StartExam',
@@ -85,7 +85,7 @@
       previewQuestionList
     },
     computed: {
-      testPaperId() {
+      examTestPaperId() {
         return this.$route.query.id
       },
       // 所有答案
@@ -111,9 +111,14 @@
         totalScore: 0,
         passedScore: 0,
         itemCount: 0,
+        // 限时
         limitedTime: 0,
+        // 剩余时间
+        retainTime: 0,
         // 所有试题
         allQuestions: [],
+        // 所有试题项目
+        allTestPaperItems: [],
         // 单选题
         choiceQuestions: [],
         // 多选题
@@ -138,7 +143,7 @@
     },
     methods: {
       preview() {
-        const params = { id: this.testPaperId }
+        const params = { id: this.examTestPaperId }
         preview(params).then(response => {
           const data = response.data
           this.testPaperName = data.name
@@ -146,6 +151,7 @@
           this.passedScore = data.passedScore
           this.itemCount = data.itemCount
           this.limitedTime = data.limitedTime
+          this.retainTime = data.limitedTime
           // 单选题
           this.choiceQuestions = data.examQuestions.filter(item => item.type === 'choice')
           this.choiceQuestions = this.choiceQuestions.map(question => {
@@ -183,19 +189,20 @@
           })
           // 所有试题
           this.allQuestions = data.examQuestions
+          this.allTestPaperItems = data.examTestPaperItems
           // 倒计时开始
           this.countdown = window.setInterval(this.countdownTime, 1000)
         })
       },
       // 倒计时
       countdownTime() {
-        this.limitedTime--
-        if (this.limitedTime === 0) {
+        this.retainTime--
+        if (this.retainTime === 0) {
           window.clearInterval(this.countdown)
           // 倒计时结束必须交卷
           alert('时间到，请交卷')
           // this.upTest()
-        } else if (this.limitedTime === 900) {
+        } else if (this.retainTime === 900) {
           this.$notify({
             title: '注意',
             message: '仅剩最后15分钟',
@@ -247,13 +254,50 @@
           background: 'rgba(0, 0, 0, 0.7)'
         })
 
-        setTimeout(() => {
-          loading.close()
-          this.$message({
-            type: 'success',
-            message: '交卷完毕！'
+        const userId = 0
+
+        // 试卷结果
+        const examTestPaperResult = {
+          testpaperId: this.examTestPaperId,
+          testpaperName: this.testPaperName,
+          userId: userId,
+          score: 0,
+          objectiveScore: 0,
+          subjectiveScore: 0,
+          teacherSay: '',
+          rightItemCount: 0,
+          usedTime: this.limitedTime - this.retainTime,
+          status: 'doing'
+        }
+
+        // 试卷项目结果
+        const examTestPaperItemResults = []
+        this.allAnswers.forEach(answer => {
+          const item = this.allTestPaperItems.find(item => item.questionId === answer.questionId)
+          examTestPaperItemResults.push({
+            testpaperId: this.examTestPaperId,
+            testpaperItemId: item.id,
+            questionId: answer.questionId,
+            userId: userId,
+            answer: answer.answer,
+            status: 'none'
           })
-        }, 3000)
+        })
+
+        // 提交试卷参数
+        const params = {
+          examTestPaperResult: examTestPaperResult,
+          examTestPaperItemResults: examTestPaperItemResults
+        }
+
+        submit(params).then(response => {
+          console.log(response.data)
+          this.$message({ type: 'success', message: '交卷完毕！' })
+          loading.close()
+        }).catch(function() {
+          this.$message({ type: 'success', message: '系统出错啦！' })
+          loading.close()
+        })
       }
     }
   }

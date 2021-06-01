@@ -62,3 +62,16 @@ export function listExam(query) {
     params: query
   })
 }
+
+/**
+ * 交卷
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export function submit(params) {
+  return request({
+    url: '/xxx/exam/testPaper/submit',
+    method: 'post',
+    data: params
+  })
+}
