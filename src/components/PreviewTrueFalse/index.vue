@@ -10,9 +10,9 @@
       </div>
     </div>
     <div v-for="(item,index) in options" :key="item.id" class="box-start Mb-25">
-      <div :class="{optionActive:item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer">{{ index+1 | convert}}
+      <div :class="{optionActive:item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer" @click="doAnswer(index)">{{ index+1 | convert}}
       </div>
-      <div :class="{activeFont:item.isAnswer}" class="mousePointer">{{ item.metas }}</div>
+      <div :class="{activeFont:item.isAnswer}" class="mousePointer" @click="doAnswer(index)">{{ item.metas }}</div>
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div>
@@ -57,7 +57,38 @@
             isAnswer: false
           }
         ],
-        isAnswer: false
+        answerData: {
+          questionId: this.trueFalseQuestion.id,
+          isDone: false,
+          isSign: false,
+          answer: ''
+        }
+      }
+    },
+    methods: {
+      // 答题
+      doAnswer(index) {
+        if (this.lookWrong) {
+          return
+        }
+        for (let i = 0; i < this.options.length; i++) {
+          if (i === index) {
+            this.$set(this.options[i], 'isAnswer', true)
+          } else {
+            this.$set(this.options[i], 'isAnswer', false)
+          }
+        }
+        this.answerData.answer = index
+        this.answerData.isDone = true
+        this.$emit('doAnswer', this.answerData)
+      },
+      // 标记
+      sign() {
+        if (this.lookWrong) {
+          return
+        }
+        this.answerData.isSign = !this.answerData.isSign
+        this.$emit('doAnswer', this.answerData)
       }
     }
   }

@@ -23,11 +23,11 @@
                 <div v-if="questionQuestions.length>0" :class="{activeItem:typeIndex===5}" class="questionTypeItem box-center" @click="changeTypeItem(5)">问答题（{{ questionQuestions.length }}）</div>
               </div>
             </div>
-            <previewChoiceList v-show="typeIndex===1" :choiceQuestions="choiceQuestions" @backItem="backItem" @nextGroup="nextGroup"/>
-            <previewChoiceMultiList v-show="typeIndex===2" :choiceMultiQuestions="choiceMultiQuestions" @backItem="backItem" @nextGroup="nextGroup"/>
-            <previewTrueFalseList v-show="typeIndex===3" :trueFalseQuestions="trueFalseQuestions" @backItem="backItem" @nextGroup="nextGroup"/>
-            <previewFillBlankList v-show="typeIndex===4" :fillBlankQuestions="fillBlankQuestions" @backItem="backItem" @nextGroup="nextGroup"/>
-            <previewQuestionList v-show="typeIndex===5" :questionQuestions="questionQuestions" @backItem="backItem"/>
+            <previewChoiceList v-show="typeIndex===1" :choiceQuestions="choiceQuestions" @doAnswer="doAnswer" @nextGroup="nextGroup"/>
+            <previewChoiceMultiList v-show="typeIndex===2" :choiceMultiQuestions="choiceMultiQuestions" @doAnswer="doAnswer" @nextGroup="nextGroup"/>
+            <previewTrueFalseList v-show="typeIndex===3" :trueFalseQuestions="trueFalseQuestions" @doAnswer="doAnswer" @nextGroup="nextGroup"/>
+            <previewFillBlankList v-show="typeIndex===4" :fillBlankQuestions="fillBlankQuestions" @doAnswer="doAnswer" @nextGroup="nextGroup"/>
+            <previewQuestionList v-show="typeIndex===5" :questionQuestions="questionQuestions" @doAnswer="doAnswer"/>
           </div>
         </div>
         <div class="outlineTest">
@@ -38,8 +38,8 @@
             </div>
             <div class="gray-medium size-large Mt-20 Mb-20">答题卡</div>
             <div class="box-start-wrap Mb-30" style="max-height:700px;overflow-y:auto;">
-              <div v-for="(item,index) in allQuestions" :key="item.id" class="itemContent box-v-start">
-                <div :class="{doneItem:item.isAnswer}" class="itemIndex box-v-center">
+              <div v-for="(item,index) in allAnswers" :key="item.questionId" class="itemContent box-v-start">
+                <div :class="{doneItem:item.isDone}" class="itemIndex box-v-center">
                   {{ index + 1 }}
                 </div>
                 <div :class="{visibilityNone:!item.isSign}" class="signCircle"/>
@@ -60,7 +60,7 @@
               </div>
             </div>
           </div>
-          <div class="submitTest box-v-center mousePointer">交卷</div>
+          <div class="submitTest box-v-center mousePointer" @click="handTestPaper">交卷</div>
         </div>
       </div>
     </div>
@@ -87,6 +87,20 @@
     computed: {
       testPaperId() {
         return this.$route.query.id
+      },
+      // 所有答案
+      allAnswers() {
+        const answers = []
+        this.allQuestions.forEach((question, index) => {
+          answers.push({
+            questionId: question.id,
+            itemId: 0,
+            isDone: false,
+            isSign: false,
+            answer: ''
+          })
+        })
+        return answers
       }
     },
     data() {
@@ -132,8 +146,6 @@
           this.passedScore = data.passedScore
           this.itemCount = data.itemCount
           this.limitedTime = data.limitedTime
-          // 所有试题
-          this.allQuestions = data.examQuestions
           // 单选题
           this.choiceQuestions = data.examQuestions.filter(item => item.type === 'choice')
           this.choiceQuestions = this.choiceQuestions.map(question => {
@@ -169,6 +181,8 @@
             question.score = item.score
             return question
           })
+          // 所有试题
+          this.allQuestions = data.examQuestions
           // 倒计时开始
           this.countdown = window.setInterval(this.countdownTime, 1000)
         })
@@ -192,14 +206,54 @@
       changeTypeItem(type) {
         this.typeIndex = type
       },
-      backItem(data) {
-        const indexChange = data.indexItem
-        this.$set(this.testItemList[indexChange], 'isAnswer', data.isAnswer)
-        this.$set(this.testItemList[indexChange], 'isSign', data.isSign)
-        this.$set(this.testItemList[indexChange], 'stuAnswer', data.stuAnswer)
+      doAnswer(data) {
+        const questionId = data.questionId
+        const item = this.allAnswers.find(item => item.questionId === questionId)
+        this.$set(item, 'isDone', data.isDone)
+        this.$set(item, 'isSign', data.isSign)
+        this.$set(item, 'answer', data.answer)
       },
       nextGroup(type) {
         this.changeTypeItem(type)
+      },
+      // 交卷
+      handTestPaper() {
+        let answerAll = true
+        let tempStr = null
+        for (let i = 0; i < this.allAnswers.length; i++) {
+          if (!this.allAnswers[i].isDone) {
+            answerAll = false
+          }
+        }
+        if (!answerAll) {
+          tempStr = '有试题未做，是否交卷？'
+        } else {
+          tempStr = '确认交卷吗？'
+        }
+        this.$confirm(tempStr, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          this.doSubmit()
+        }).catch(() => {
+        })
+      },
+      doSubmit() {
+        const loading = this.$loading({
+          lock: true,
+          text: '正在提交试卷，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+
+        setTimeout(() => {
+          loading.close()
+          this.$message({
+            type: 'success',
+            message: '交卷完毕！'
+          })
+        }, 3000)
       }
     }
   }

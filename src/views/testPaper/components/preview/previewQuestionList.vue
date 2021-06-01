@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white group">
     <div v-for="(item,index) in questionQuestions" :key="item.id" class="groupItem">
-      <PreviewQuestion :questionQuestion="item" :index="index" :lookWrong="lookWrong" :isMarking="isMarking" @backItem="backItem"/>
+      <PreviewQuestion :questionQuestion="item" :index="index" :lookWrong="lookWrong" :isMarking="isMarking" @doAnswer="doAnswer"/>
     </div>
   </div>
 </template>
@@ -27,8 +27,8 @@
       }
     },
     methods: {
-      backItem(data) {
-        this.$emit('backItem', data)
+      doAnswer(data) {
+        this.$emit('doAnswer', data)
       }
     }
   }

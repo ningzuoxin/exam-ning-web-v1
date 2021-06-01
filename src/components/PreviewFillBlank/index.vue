@@ -5,20 +5,20 @@
         <span class="font-bold">{{ index + 1 }}、填空题</span> <span class="">（{{ fillBlankQuestion.score }}分）</span>
       </div>
       <div v-if="!lookWrong">
-        <img v-if="fillBlankQuestion.isSign" src="@/assets/images/signActive.png" class="signCss mousePointer">
-        <img v-else src="@/assets/images/sign.png" class="signCss mousePointer">
+        <img v-if="fillBlankQuestion.isSign" src="@/assets/images/signActive.png" class="signCss mousePointer" @click="sign">
+        <img v-else src="@/assets/images/sign.png" class="signCss mousePointer" @click="sign">
       </div>
     </div>
     <div v-if="isBlankFirst" class="box-start-wrap">
       <div v-for="(item,index) in answerArr" :key="item.id" class="box-start Mb-25">
-        <input v-show="index!==answerArr.length-1" v-model="item.answer" :readonly="lookWrong" type="text" class="blankInput">
+        <input v-show="index!==answerArr.length-1" v-model="item.answer" :readonly="lookWrong" type="text" class="blankInput" @input="fillAnswer(index)">
         <div>{{ item.stem }}</div>
       </div>
     </div>
     <div v-if="!isBlankFirst" class="box-start-wrap">
       <div v-for="(item,index) in answerArr" :key="item.id" class="box-start Mb-25">
         <div>{{ item.stem }}</div>
-        <input v-show="index!==answerArr.length-1" v-model="item.answer" :readonly="lookWrong" type="text" class="blankInput">
+        <input v-show="index!==answerArr.length-1" v-model="item.answer" :readonly="lookWrong" type="text" class="blankInput" @input="fillAnswer(index)">
       </div>
     </div>
     <div v-if="lookWrong" class="Mb-20">
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+  import { debounce } from '@/utils/index'
+
   export default {
     name: 'Index',
     props: {
@@ -55,7 +57,13 @@
         stemArr: [],
         isAnswer: false,
         isBlankFirst: false,
-        answerArr: []
+        answerArr: [],
+        answerData: {
+          questionId: this.fillBlankQuestion.id,
+          isDone: false,
+          isSign: false,
+          answer: ''
+        }
       }
     },
     created() {
@@ -82,6 +90,44 @@
             stem: this.stemArr[i]
           })
         }
+      }
+    },
+    methods: {
+      fillAnswer: debounce(function(index) {
+        this.doAnswer(index)
+      }, 500),
+      // 答题
+      doAnswer(index) {
+        if (this.lookWrong) {
+          return
+        }
+        let answerAll = true
+        const tempAnswer = []
+        for (let i = 0; i < this.answerArr.length; i++) {
+          if (i !== this.answerArr.length - 1) {
+            if (this.$isNull(this.answerArr[i].answer)) {
+              answerAll = false
+              tempAnswer.push('')
+            } else {
+              tempAnswer.push(this.answerArr[i].answer.trim())
+            }
+          }
+        }
+        if (answerAll) {
+          this.answerData.isDone = true
+        } else {
+          this.answerData.isDone = false
+        }
+        this.answerData.answer = JSON.stringify(tempAnswer)
+        this.$emit('doAnswer', this.answerData)
+      },
+      // 标记
+      sign() {
+        if (this.lookWrong) {
+          return
+        }
+        this.answerData.isSign = !this.answerData.isSign
+        this.$emit('doAnswer', this.answerData)
       }
     }
   }

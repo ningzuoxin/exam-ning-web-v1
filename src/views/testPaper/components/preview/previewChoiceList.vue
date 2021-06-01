@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white group">
     <div v-for="(item,index) in choiceQuestions" :key="item.id" class="groupItem">
-      <PreviewChoice :choiceQuestion="item" :index="index" :lookWrong="lookWrong" @backItem="backItem"/>
+      <PreviewChoice :choiceQuestion="item" :index="index" :lookWrong="lookWrong" @doAnswer="doAnswer"/>
     </div>
     <div v-if="choiceQuestions.length>0" class="nextGroup box-v-center" @click="nextGroup">
       <div>下一部分 <i class="el-icon-d-arrow-right font-bold"/></div>
@@ -26,8 +26,8 @@
       }
     },
     methods: {
-      backItem(data) {
-        this.$emit('backItem', data)
+      doAnswer(data) {
+        this.$emit('doAnswer', data)
       },
       nextGroup() {
         this.$emit('nextGroup', 2)

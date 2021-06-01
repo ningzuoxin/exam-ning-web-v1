@@ -5,8 +5,8 @@
         <span class="font-bold">{{ index + 1 }}、{{ questionQuestion.stem }}</span> <span class="">（{{ questionQuestion.score }}分）</span>
       </div>
       <div v-if="!lookWrong">
-        <img v-if="questionQuestion.isSign" src="@/assets/images/signActive.png" class="signCss mousePointer">
-        <img v-else src="@/assets/images/sign.png" class="signCss mousePointer">
+        <img v-if="questionQuestion.isSign" src="@/assets/images/signActive.png" class="signCss mousePointer" @click="sign">
+        <img v-else src="@/assets/images/sign.png" class="signCss mousePointer" @click="sign">
       </div>
     </div>
     <div class="box-start Mb-25">
@@ -15,7 +15,8 @@
         :readonly="lookWrong"
         v-model="answerValue"
         type="textarea"
-        placeholder="请输入内容"/>
+        placeholder="请输入内容"
+        @input.native="fillAnswer"/>
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div v-if="!isMarking" class="box-start align-stretch">
@@ -37,6 +38,8 @@
 </template>
 
 <script>
+  import { debounce } from '@/utils/index'
+
   export default {
     name: 'Index',
     props: {
@@ -59,7 +62,42 @@
     },
     data() {
       return {
-        answerValue: this.lookWrong ? this.questionQuestion.answer : null
+        answerValue: this.lookWrong ? this.questionQuestion.answer : null,
+        answerData: {
+          questionId: this.questionQuestion.id,
+          isDone: false,
+          isSign: false,
+          answer: ''
+        }
+      }
+    },
+    methods: {
+      fillAnswer: debounce(function() {
+        this.doAnswer()
+      }, 500),
+      // 答题
+      doAnswer() {
+        if (this.lookWrong && !this.isMarking) {
+          return
+        }
+        if (this.isMarking) {
+          this.answerData.score = this.answerData.score.replace(/[^\d]/g, '')
+        }
+        if (!this.$isNull(this.answerValue)) {
+          this.answerData.isDone = true
+        } else {
+          this.answerData.isDone = false
+        }
+        this.answerData.answer = this.answerValue
+        this.$emit('doAnswer', this.answerData)
+      },
+      // 标记
+      sign() {
+        if (this.lookWrong) {
+          return
+        }
+        this.answerData.isSign = !this.answerData.isSign
+        this.$emit('doAnswer', this.answerData)
       }
     }
   }
