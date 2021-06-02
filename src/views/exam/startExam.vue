@@ -138,7 +138,6 @@
       this.preview()
     },
     beforeDestroy() {
-      alert('清除定时器，并且提交试卷')
       window.clearInterval(this.countdown)
     },
     methods: {
@@ -200,8 +199,7 @@
         if (this.retainTime === 0) {
           window.clearInterval(this.countdown)
           // 倒计时结束必须交卷
-          alert('时间到，请交卷')
-          // this.upTest()
+          this.doSubmit()
         } else if (this.retainTime === 900) {
           this.$notify({
             title: '注意',
@@ -294,6 +292,7 @@
           console.log(response.data)
           this.$message({ type: 'success', message: '交卷完毕！' })
           loading.close()
+          this.$router.push({ path: '/exam/listExam' })
         }).catch(function() {
           this.$message({ type: 'success', message: '系统出错啦！' })
           loading.close()
