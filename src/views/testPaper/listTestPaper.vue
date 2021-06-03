@@ -19,7 +19,7 @@
       border
       style="width: 100%">
       <el-table-column
-        type="selection"
+        type="index"
         align="center"
         width="50">
       </el-table-column>
@@ -59,10 +59,10 @@
           <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="left" width="240" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="preview(scope.row.id)">预览</el-button>
-          <el-button size="mini" type="success">发布</el-button>
+          <el-button size="mini" type="success" v-if="scope.row.isUsed===0" @click="publish(scope.row.id)">发布</el-button>
           <el-button size="mini" type="danger">删除</el-button>
         </template>
       </el-table-column>
@@ -80,10 +80,11 @@
 </template>
 
 <script>
-  import { listTypes, listTestPaper } from '@/api/testPaper/test-paper'
+  import { listTypes, listTestPaper, publish } from '@/api/testPaper/test-paper'
 
   export default {
     name: 'ListTestPaper',
+    inject: ['reload'],
     data() {
       return {
         query: {
@@ -129,6 +130,23 @@
         this.$router.push({
           path: '/testPaper/previewTestPaper',
           query: { id: id }
+        })
+      },
+      // 发布试卷
+      publish(id) {
+        this.$confirm('确认发布？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          const params = { id: id }
+          publish(params).then(response => {
+            if (response.code === 20000) {
+              this.msgSuccess('已发布')
+              setTimeout(() => this.reload(), 500)
+            }
+          }).catch(function() {
+          })
         })
       }
     }

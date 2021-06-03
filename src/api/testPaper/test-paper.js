@@ -75,3 +75,16 @@ export function submit(params) {
     data: params
   })
 }
+
+/**
+ * 发布试卷
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function publish(query) {
+  return request({
+    url: '/xxx/exam/testPaper/publish',
+    method: 'get',
+    params: query
+  })
+}

@@ -9,8 +9,11 @@
       <el-form-item label="试卷名称">
         <el-input v-model="examTestPaperModel.name"></el-input>
       </el-form-item>
-      <el-form-item label="限时">
+      <el-form-item label="限时(秒)">
         <el-input v-model="examTestPaperModel.limitedTime"></el-input>
+      </el-form-item>
+      <el-form-item label="考试次数">
+        <el-input v-model="examTestPaperModel.times"></el-input>
       </el-form-item>
       <el-form-item label="及格分">
         <el-input v-model="examTestPaperModel.passedScore"></el-input>
@@ -73,11 +76,12 @@
           type: '',
           name: '',
           // 限时
-          limitedTime: 30,
+          limitedTime: 3600,
           // 及格分
           passedScore: 60,
           totalScore: 0,
           itemCount: 0,
+          times: 0,
           examTestPaperItems: []
         },
         types: []
@@ -98,6 +102,13 @@
       },
       questionLabel() {
         return '问答题（' + this.questionQuestions.length + '）'
+      },
+      totalScore() {
+        return this.choiceScore * this.choiceQuestions.length +
+          this.choiceMultiScore * this.choiceMultiQuestions.length +
+          this.fillBlankScore * this.fillBlankQuestions.length +
+          this.trueFalseScore * this.trueFalseQuestions.length +
+          this.questionScore * this.questionQuestions.length
       }
     },
     created() {
@@ -117,12 +128,7 @@
           return
         }
 
-        this.examTestPaperModel.totalScore =
-          this.choiceScore * this.choiceQuestions.length +
-          this.choiceMultiScore * this.choiceMultiQuestions.length +
-          this.fillBlankScore * this.fillBlankQuestions.length +
-          this.trueFalseScore * this.trueFalseQuestions.length +
-          this.questionScore * this.questionQuestions.length
+        this.examTestPaperModel.totalScore = this.totalScore
 
         this.examTestPaperModel.itemCount = this.testPaperQuestions.length
         this.examTestPaperModel.examTestPaperItems = this.testPaperQuestions.map(question => {
@@ -142,7 +148,7 @@
         add(this.examTestPaperModel).then(response => {
           if (response.code === 20000) {
             this.msgSuccess('添加成功')
-            // setTimeout(() => this.$router.push({ path: '/testPaper/listQuestion' }), 1000)
+            setTimeout(() => this.$router.push({ path: '/testPaper/listTestPaper' }), 1000)
           }
         }).catch(function() {
         })
@@ -171,11 +177,12 @@
             type: '',
             name: '',
             // 限时
-            limitedTime: 30,
+            limitedTime: 3600,
             // 及格分
             passedScore: 60,
             totalScore: 0,
             itemCount: 0,
+            times: 0,
             examTestPaperItems: []
           }
         }
@@ -197,6 +204,7 @@
         this.trueFalseScore = Number(data.scoreObj.judgScore)
         this.fillBlankScore = Number(data.scoreObj.blankScore)
         this.questionScore = Number(data.scoreObj.answerScore)
+        this.examTestPaperModel.passedScore = this.totalScore * 0.6
       },
       getTestPaperTypes() {
         listTypes().then(response => {
