@@ -40,7 +40,7 @@
         show-overflow-tooltip>
       </el-table-column>
       <el-table-column
-        prop="refNum"
+        prop="usedNum"
         label="引用数"
         width="70">
       </el-table-column>

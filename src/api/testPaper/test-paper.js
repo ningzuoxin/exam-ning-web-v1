@@ -88,3 +88,16 @@ export function publish(query) {
     params: query
   })
 }
+
+/**
+ * 删除试卷
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function deleteTestPaper(query) {
+  return request({
+    url: '/xxx/exam/testPaper/delete',
+    method: 'get',
+    params: query
+  })
+}

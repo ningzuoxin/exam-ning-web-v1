@@ -63,7 +63,7 @@
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="preview(scope.row.id)">预览</el-button>
           <el-button size="mini" type="success" v-if="scope.row.isUsed===0" @click="publish(scope.row.id)">发布</el-button>
-          <el-button size="mini" type="danger">删除</el-button>
+          <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-  import { listTypes, listTestPaper, publish } from '@/api/testPaper/test-paper'
+  import { listTypes, listTestPaper, publish, deleteTestPaper } from '@/api/testPaper/test-paper'
 
   export default {
     name: 'ListTestPaper',
@@ -143,6 +143,23 @@
           publish(params).then(response => {
             if (response.code === 20000) {
               this.msgSuccess('已发布')
+              setTimeout(() => this.reload(), 500)
+            }
+          }).catch(function() {
+          })
+        })
+      },
+      // 删除
+      del(id) {
+        this.$confirm('确认删除？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'info'
+        }).then(() => {
+          const params = { id: id }
+          deleteTestPaper(params).then(response => {
+            if (response.code === 20000) {
+              this.msgSuccess('已删除')
               setTimeout(() => this.reload(), 500)
             }
           }).catch(function() {
