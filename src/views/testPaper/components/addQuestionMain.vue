@@ -8,11 +8,11 @@
       <div :class="{activeItem:typeIndex===4}" class="questionTypeItem box-center" @click="changeTypeItem(4)">填空题</div>
       <div :class="{activeItem:typeIndex===5}" class="questionTypeItem box-center" @click="changeTypeItem(5)">问答题</div>
     </div>
-    <SingleChoice v-show="typeIndex===1" :single-arr="singleArr" :paper-qus="false"/>
-    <MultipleChoice v-show="typeIndex===2" :more-arr="moreArr" :paper-qus="false"/>
-    <TrueOrFalse v-show="typeIndex===3" :judg-arr="judgArr" :paper-qus="false"/>
-    <FillBlank v-show="typeIndex===4" :blank-arr="blankArr" :paper-qus="false"/>
-    <AnswerQuestion v-show="typeIndex===5" :answer-arr="answerArr" :paper-qus="false"/>
+    <SingleChoice v-show="typeIndex===1" :paper-qus="false" :copyQuestion="copyQuestion"/>
+    <MultipleChoice v-show="typeIndex===2" :paper-qus="false" :copyQuestion="copyQuestion"/>
+    <TrueOrFalse v-show="typeIndex===3" :paper-qus="false" :copyQuestion="copyQuestion"/>
+    <FillBlank v-show="typeIndex===4" :paper-qus="false" :copyQuestion="copyQuestion"/>
+    <AnswerQuestion v-show="typeIndex===5" :paper-qus="false" :copyQuestion="copyQuestion"/>
   </div>
 </template>
 <script>
@@ -24,16 +24,20 @@
 
   export default {
     name: 'AddQuestionMain',
+    props: ['copyQuestion'],
     components: { SingleChoice, MultipleChoice, TrueOrFalse, FillBlank, AnswerQuestion },
     data() {
       return {
-        typeIndex: 1,
-        examQuestionList: [],
-        singleArr: [],
-        moreArr: [],
-        judgArr: [],
-        blankArr: [],
-        answerArr: []
+        typeIndex: 1
+      }
+    },
+    created() {
+      if (this.copyQuestion != null) {
+        const type = this.copyQuestion.type
+        if (type === 'choice_multi') this.typeIndex = 2
+        if (type === 'true_false') this.typeIndex = 3
+        if (type === 'fill_blank') this.typeIndex = 4
+        if (type === 'question') this.typeIndex = 5
       }
     },
     methods: {

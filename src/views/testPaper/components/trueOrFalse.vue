@@ -48,16 +48,7 @@
 
   export default {
     name: 'TrueOrFalse',
-    props: {
-      judgArr: {
-        type: Array,
-        default: null
-      },
-      paperQus: {
-        type: Boolean,
-        default: false
-      }
-    },
+    props: ['copyQuestion', 'paperQus'],
     data() {
       return {
         textarea2: null,
@@ -70,7 +61,7 @@
           score: null,
           showAddTopic: false,
           options: [{
-            isAnswer: true,
+            isAnswer: false,
             title: '正确',
             id: 1
           }, {
@@ -85,25 +76,23 @@
         editIndexNow: null
       }
     },
-    watch: {
-      judgArr: {
-        handler(val, oldVal) {
-          this.examQuestionList = val.map(item => {
-            return this.$copy(item)
+    created() {
+      if (this.copyQuestion !== undefined && this.copyQuestion != null && typeof this.copyQuestion === 'object') {
+        this.showAddTopic = true
+        this.question.stem = this.copyQuestion.stem
+        this.question.score = this.copyQuestion.score
+        this.question.answer = this.copyQuestion.answer
+        this.question.analysis = this.copyQuestion.analysis
+        if (this.copyQuestion.type === 'true_false') {
+          this.question.options.forEach((t, index) => {
+            if (Number(this.question.answer) === index) {
+              t.isAnswer = true
+            }
           })
-        },
-        deep: true
+        }
       }
     },
-    created() {
-      this.examQuestionList = this.$isNull(this.judgArr) ? [] : this.judgArr.map(item => {
-        return this.$copy(item)
-      })
-    },
     methods: {
-      handleChange(val) {
-        console.log(val)
-      },
       setAnswer(index) {
         for (let i = 0; i < this.question.options.length; i++) {
           if (index === i) {

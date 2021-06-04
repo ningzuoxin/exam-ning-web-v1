@@ -44,16 +44,7 @@
 
   export default {
     name: 'FillBlank',
-    props: {
-      blankArr: {
-        type: Array,
-        default: null
-      },
-      paperQus: {
-        type: Boolean,
-        default: false
-      }
-    },
+    props: ['copyQuestion', 'paperQus'],
     data() {
       return {
         textarea2: null,
@@ -68,7 +59,6 @@
           answer: null,
           stem: null,
           score: null,
-          showAddTopic: false,
           name: null,
           name2: null,
           blankAnswer: [],
@@ -94,25 +84,21 @@
           return
         }
         this.examQuestion.name2 = this.examQuestion.name.replace(/\{{(.+?)\}}/g, '_______')
-      },
-      blankArr: {
-        handler(val, oldVal) {
-          this.examQuestionList = val.map(item => {
-            return this.$copy(item)
-          })
-        },
-        deep: true
       }
     },
     created() {
-      this.examQuestionList = this.$isNull(this.blankArr) ? [] : this.blankArr.map(item => {
-        return this.$copy(item)
-      })
+      if (this.copyQuestion !== undefined && this.copyQuestion != null && typeof this.copyQuestion === 'object') {
+        this.showAddTopic = true
+        this.answer = JSON.parse(this.copyQuestion.answer)
+        this.examQuestion.name = this.copyQuestion.stem
+        this.answer.forEach(t => {
+          this.examQuestion.name = this.examQuestion.name.replace(/\{\{}}/, '{{' + t + '}}')
+        })
+        this.examQuestion.score = this.copyQuestion.score
+        this.examQuestion.analysis = this.copyQuestion.analysis
+      }
     },
     methods: {
-      handleChange(val) {
-        console.log(val)
-      },
       showAddPanel() {
         if (this.editIndexNow !== null) {
           this.$message('请先保存题目')
@@ -176,10 +162,14 @@
         this.$refs.textarea.selectionStart = 0
         this.$refs.textarea.selectionEnd = 0
       },
-      deleteBlank(index) { // 撤销空格操作
+      // 撤销空格操作
+      deleteBlank(index) {
         const tempStr = this.answer[index]
+        console.log(tempStr)
         const re = new RegExp('{{' + tempStr + '}}', 'g')
+        console.log(this.examQuestion.name)
         this.examQuestion.name = this.examQuestion.name.replace(re, tempStr)
+        console.log(this.examQuestion.name)
         this.examQuestion.name2 = this.examQuestion.name.replace(/\{{(.+?)\}}/g, '_______')
         this.answer.splice(index, 1)
       }

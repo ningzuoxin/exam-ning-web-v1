@@ -61,16 +61,7 @@
 
   export default {
     name: 'MultipleChoice',
-    props: {
-      moreArr: {
-        type: Array,
-        default: null
-      },
-      paperQus: {
-        type: Boolean,
-        default: false
-      }
-    },
+    props: ['copyQuestion', 'paperQus'],
     data() {
       return {
         textarea2: null,
@@ -82,12 +73,12 @@
           stem: null,
           score: null,
           missScore: null,
-          showAddTopic: false,
-          options: [{
-            isAnswer: true,
-            title: null,
-            id: 1
-          },
+          options: [
+            {
+              isAnswer: true,
+              title: null,
+              id: 1
+            },
             {
               isAnswer: false,
               title: null,
@@ -102,7 +93,8 @@
               isAnswer: false,
               title: null,
               id: 4
-            }],
+            }
+          ],
           keyWord: [],
           knowledgeType: []
         },
@@ -110,30 +102,25 @@
         editIndexNow: null
       }
     },
-    computed: {
-      treeDataList() {
-        return this.$store.getters.chapterType
-      }
-    },
-    watch: {
-      moreArr: {
-        handler(val, oldVal) {
-          this.examQuestionList = val.map(item => {
-            return this.$copy(item)
-          })
-        },
-        deep: true
-      }
-    },
     created() {
-      this.examQuestionList = this.$isNull(this.moreArr) ? [] : this.moreArr.map(item => {
-        return this.$copy(item)
-      })
+      if (this.copyQuestion !== undefined && this.copyQuestion != null && typeof this.copyQuestion === 'object') {
+        this.showAddTopic = true
+        this.question.stem = this.copyQuestion.stem
+        this.question.score = this.copyQuestion.score
+        this.question.answer = this.copyQuestion.answer
+        this.question.analysis = this.copyQuestion.analysis
+        if (this.copyQuestion.type === 'choice_multi') {
+          this.question.options = JSON.parse(this.copyQuestion.metas).choices.map((item, index) => {
+            return {
+              id: index + 1,
+              title: item,
+              isAnswer: this.question.answer.indexOf(index) !== -1
+            }
+          })
+        }
+      }
     },
     methods: {
-      handleChange(val) {
-        console.log(val)
-      },
       addOption() {
         this.question.options.push({
           isAnswer: false,

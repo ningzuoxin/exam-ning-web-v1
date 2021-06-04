@@ -65,16 +65,7 @@
 
   export default {
     name: 'SingleChoice',
-    props: {
-      singleArr: {
-        type: Array,
-        default: null
-      },
-      paperQus: {
-        type: Boolean,
-        default: false
-      }
-    },
+    props: ['copyQuestion', 'paperQus'],
     data() {
       return {
         textarea2: null,
@@ -85,12 +76,12 @@
           score: null,
           answer: null,
           analysis: null,
-          showAddTopic: false,
-          options: [{
-            isAnswer: true,
-            title: null,
-            id: 1
-          },
+          options: [
+            {
+              isAnswer: true,
+              title: null,
+              id: 1
+            },
             {
               isAnswer: false,
               title: null,
@@ -105,7 +96,8 @@
               isAnswer: false,
               title: null,
               id: 4
-            }],
+            }
+          ],
           keyWord: [],
           knowledgeType: []
         },
@@ -113,25 +105,25 @@
         editIndexNow: null
       }
     },
-    watch: {
-      singleArr: {
-        handler(val, oldVal) {
-          this.examQuestionList = val.map(item => {
-            return this.$copy(item)
+    created() {
+      if (this.copyQuestion !== undefined && this.copyQuestion != null && typeof this.copyQuestion === 'object') {
+        this.showAddTopic = true
+        this.question.stem = this.copyQuestion.stem
+        this.question.score = this.copyQuestion.score
+        this.question.answer = this.copyQuestion.answer
+        this.question.analysis = this.copyQuestion.analysis
+        if (this.copyQuestion.type === 'choice') {
+          this.question.options = JSON.parse(this.copyQuestion.metas).choices.map((item, index) => {
+            return {
+              id: index + 1,
+              title: item,
+              isAnswer: (Number(this.question.answer) === index)
+            }
           })
-        },
-        deep: true
+        }
       }
     },
-    created() {
-      this.examQuestionList = this.$isNull(this.singleArr) ? [] : this.singleArr.map(item => {
-        return this.$copy(item)
-      })
-    },
     methods: {
-      handleChange(val) {
-        console.log(val)
-      },
       addOption() {
         this.question.options.push({
           isAnswer: false,

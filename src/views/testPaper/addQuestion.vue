@@ -1,6 +1,6 @@
 <template>
   <div class="app-container" style="min-height: calc(100vh - 60px);width: 100%;">
-    <AddQuestionMain/>
+    <AddQuestionMain :copyQuestion="copyQuestion"/>
   </div>
 </template>
 <script>
@@ -8,6 +8,19 @@
 
   export default {
     name: 'AddQuestion',
-    components: { AddQuestionMain }
+    components: {
+      AddQuestionMain
+    },
+    data() {
+      return {
+        copyQuestion: null
+      }
+    },
+    created() {
+      const data = this.$route.query.copyQuestion
+      if (data !== undefined) {
+        this.copyQuestion = data
+      }
+    }
   }
 </script>

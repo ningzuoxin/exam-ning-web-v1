@@ -66,16 +66,10 @@
           <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="240" class-name="small-padding fixed-width">
-        <template>
-          <el-button type="primary" size="mini">
-            修改
-          </el-button>
-          <el-button size="mini" type="success">
-            发布
-          </el-button>
-          <el-button size="mini" type="danger">
-            删除
+      <el-table-column label="操作" align="center" width="120" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="copy(scope.row)">
+            复制
           </el-button>
         </template>
       </el-table-column>
@@ -140,6 +134,15 @@
           this.query.currentPage = data.current
           this.query.total = data.total
           this.tableData = data.records
+        })
+      },
+      // 复制
+      copy(question) {
+        this.$router.push({
+          path: '/testPaper/addQuestion',
+          query: {
+            copyQuestion: question
+          }
         })
       }
     }
