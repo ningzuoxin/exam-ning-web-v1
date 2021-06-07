@@ -41,6 +41,15 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="remainTimes"
+        label="考试次数"
+        width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.times===0">不限</span>
+          <span v-else>{{ scope.row.times - scope.row.resultTimes }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="date"
         label="日期"
         width="120">
@@ -48,9 +57,10 @@
           <span>{{ parseTime(scope.row.createTime,'{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="120" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="left" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="startExam(scope.row.id)">开始考试</el-button>
+          <el-button v-if="scope.row.times===0 || (scope.row.times - scope.row.resultTimes)>0" type="primary" size="mini" @click="startExam(scope.row.id)">开始考试</el-button>
+          <el-button v-if="scope.row.resultTimes>0" type="primary" size="mini" @click="startExam(scope.row.id)">查看结果</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +108,8 @@
         const params = {
           'type': this.query.type,
           'pNum': this.query.currentPage,
-          'pSize': this.query.pageSize
+          'pSize': this.query.pageSize,
+          'userId': 0
         }
         listExam(params).then(response => {
           const data = response.data
