@@ -165,11 +165,7 @@
       // 撤销空格操作
       deleteBlank(index) {
         const tempStr = this.answer[index]
-        console.log(tempStr)
-        const re = new RegExp('{{' + tempStr + '}}', 'g')
-        console.log(this.examQuestion.name)
-        this.examQuestion.name = this.examQuestion.name.replace(re, tempStr)
-        console.log(this.examQuestion.name)
+        this.examQuestion.name = this.examQuestion.name.replace('{{' + tempStr + '}}', tempStr)
         this.examQuestion.name2 = this.examQuestion.name.replace(/\{{(.+?)\}}/g, '_______')
         this.answer.splice(index, 1)
       }

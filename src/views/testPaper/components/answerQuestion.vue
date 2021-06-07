@@ -34,16 +34,7 @@
 
   export default {
     name: 'AnswerQuestion',
-    props: {
-      answerArr: {
-        type: Array,
-        default: null
-      },
-      paperQus: {
-        type: Boolean,
-        default: false
-      }
-    },
+    props: ['copyQuestion', 'paperQus'],
     data() {
       return {
         textarea2: null,
@@ -80,25 +71,16 @@
         return this.$store.getters.chapterType
       }
     },
-    watch: {
-      answerArr: {
-        handler(val, oldVal) {
-          this.examQuestionList = val.map(item => {
-            return this.$copy(item)
-          })
-        },
-        deep: true
+    created() {
+      if (this.copyQuestion !== undefined && this.copyQuestion != null && typeof this.copyQuestion === 'object') {
+        this.showAddTopic = true
+        this.question.stem = this.copyQuestion.stem
+        this.question.score = this.copyQuestion.score
+        this.question.answer = this.copyQuestion.answer
+        this.question.analysis = this.copyQuestion.analysis
       }
     },
-    created() {
-      this.examQuestionList = this.$isNull(this.answerArr) ? [] : this.answerArr.map(item => {
-        return this.$copy(item)
-      })
-    },
     methods: {
-      handleChange(val) {
-        console.log(val)
-      },
       showAddPanel() {
         if (this.editIndexNow !== null) {
           this.$message('请先保存题目')
