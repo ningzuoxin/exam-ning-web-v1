@@ -60,7 +60,7 @@
       <el-table-column label="操作" align="left" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="scope.row.times===0 || (scope.row.times - scope.row.resultTimes)>0" type="primary" size="mini" @click="startExam(scope.row.id)">开始考试</el-button>
-          <el-button v-if="scope.row.resultTimes>0" type="primary" size="mini" @click="startExam(scope.row.id)">查看结果</el-button>
+          <el-button v-if="scope.row.resultTimes>0" type="primary" size="mini" @click="showResult(scope.row.id)">查看结果</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,16 +73,25 @@
       @pagination="getList"
     />
 
+    <!-- 选择试题弹出层 -->
+    <el-dialog :visible.sync="isShowDialog" :append-to-body="true" :close-on-click-modal="false" top="5vh" width="800px" style="padding: 0px;">
+      <ShowTestResult :resultTableData="resultTableData" />
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
+  import ShowTestResult from '@/components/ShowTestResult'
   import { listExam, listTypes } from '@/api/testPaper/test-paper'
+  import { list } from '@/api/testPaper/test-result'
 
   export default {
     name: 'ListTestPaper',
+    components: { ShowTestResult },
     data() {
       return {
+        isShowDialog: false,
         query: {
           type: '',
           currentPage: 1,
@@ -90,6 +99,7 @@
           total: 0
         },
         tableData: [],
+        resultTableData: [],
         types: []
       }
     },
@@ -122,6 +132,16 @@
         this.$router.push({
           path: '/startExam',
           query: { id: id }
+        })
+      },
+      showResult(id) {
+        this.isShowDialog = true
+        const params = {
+          'id': id,
+          'userId': 0
+        }
+        list(params).then(response => {
+          this.resultTableData = response.data
         })
       }
     }

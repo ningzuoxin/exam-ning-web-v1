@@ -141,10 +141,10 @@ export const constantRoutes = [
         meta: { title: '考试列表', icon: 'el-icon-tickets' }
       },
       {
-        path: 'listExamRecord',
-        name: 'ListExamRecord',
-        component: () => import('@/views/exam/listExamRecord'),
-        meta: { title: '考试成绩', icon: 'el-icon-tickets' }
+        path: 'markExam',
+        name: 'markExam',
+        component: () => import('@/views/exam/listExam'),
+        meta: { title: '试卷批阅', icon: 'el-icon-tickets' }
       }
     ]
   },
