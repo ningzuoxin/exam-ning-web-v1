@@ -10,14 +10,14 @@
       </div>
     </div>
     <div v-for="(item,index) in options" :key="item.id" class="box-start Mb-25">
-      <div :class="{optionActive:item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer" @click="doAnswer(index)">{{ index+1 | convert}}
+      <div :class="{optionActive:item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer" @click="doAnswer(index)">{{ index + 1 | convert}}
       </div>
       <div :class="{activeFont:item.isAnswer}" class="mousePointer" @click="doAnswer(index)">{{ item.metas }}</div>
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div>
-        <span class="font-bold">【参考答案】</span> {{ Number(trueFalseQuestion.answer) + 1 | convert }}
-        <span class="Ml-10">【得分】<span class="getScore">{{ trueFalseQuestion.score }}</span>分</span>
+        <span class="font-bold">【参考答案】</span> {{ Number(trueFalseQuestion.answer) === 0 ? '对' : '错' }}
+        <span class="Ml-10">【得分】<span class="getScore">{{ trueFalseQuestion.userScore }}</span>分</span>
       </div>
     </div>
     <div v-if="lookWrong">
@@ -47,13 +47,13 @@
       return {
         options: [
           {
-            metas: '对',
             id: 0,
+            metas: '对',
             isAnswer: false
           },
           {
-            metas: '错',
             id: 1,
+            metas: '错',
             isAnswer: false
           }
         ],
@@ -63,6 +63,15 @@
           isSign: false,
           answer: ''
         }
+      }
+    },
+    created() {
+      if (this.trueFalseQuestion.userAnswer !== undefined && this.trueFalseQuestion.userAnswer !== null) {
+        this.options.forEach((item, index) => {
+          if (Number(this.trueFalseQuestion.userAnswer) === index) {
+            item.isAnswer = true
+          }
+        })
       }
     },
     methods: {

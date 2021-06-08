@@ -41,7 +41,6 @@
         </template>
       </el-table-column>
     </el-table>
-
   </div>
 </template>
 
@@ -52,8 +51,8 @@
     methods: {
       detail(id) {
         this.$router.push({
-          path: '/testPaper/previewTestPaper',
-          query: { id: 107 }
+          path: '/exam/showTestPaperResultDetail',
+          query: { id: id }
         })
       }
     }

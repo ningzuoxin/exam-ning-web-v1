@@ -23,8 +23,8 @@
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div>
-        <span class="font-bold">【参考答案】</span> {{ Number(fillBlankQuestion.answer) + 1 | convert }}
-        <span class="Ml-10">【得分】<span class="getScore">{{ fillBlankQuestion.score }}</span>分</span>
+        <span class="font-bold">【参考答案】</span> {{ fillBlankQuestion.answer | convertQuestionAnswer('fill_blank') }}
+        <span class="Ml-10">【得分】<span class="getScore">{{ fillBlankQuestion.userScore }}</span>分</span>
       </div>
     </div>
     <div v-if="lookWrong">
@@ -73,20 +73,20 @@
       } else {
         this.isBlankFirst = false
       }
-      const tempArr = this.$isNull(this.fillBlankQuestion.answer) ? [] : JSON.parse(this.fillBlankQuestion.answer)
+      const tempArr = this.$isNull(this.fillBlankQuestion.userAnswer) ? [] : JSON.parse(this.fillBlankQuestion.userAnswer)
       if (this.lookWrong) {
         for (let i = 0; i < this.stemArr.length; i++) {
           this.answerArr.push({
-            answer: tempArr[i],
             id: i,
+            answer: tempArr[i],
             stem: this.stemArr[i]
           })
         }
       } else {
         for (let i = 0; i < this.stemArr.length; i++) {
           this.answerArr.push({
-            answer: null,
             id: i,
+            answer: null,
             stem: this.stemArr[i]
           })
         }

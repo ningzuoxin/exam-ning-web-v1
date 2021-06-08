@@ -145,6 +145,13 @@ export const constantRoutes = [
         name: 'markExam',
         component: () => import('@/views/exam/listExam'),
         meta: { title: '试卷批阅', icon: 'el-icon-tickets' }
+      },
+      {
+        path: 'showTestPaperResultDetail',
+        name: 'ShowTestPaperResultDetail',
+        component: () => import('@/views/exam/showTestPaperResultDetail'),
+        meta: { title: '查看试卷', level: 2, noCache: true },
+        hidden: true
       }
     ]
   },

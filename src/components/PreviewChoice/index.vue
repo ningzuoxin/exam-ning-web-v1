@@ -10,13 +10,13 @@
       </div>
     </div>
     <div v-for="(item,index) in options" :key="item.id" class="box-start Mb-25">
-      <div :class="{optionActive: item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer" @click="doAnswer(index)">{{ index+1 | convert }}</div>
+      <div :class="{optionActive: item.isAnswer}" class="optionCss box-v-center Mr-6 mousePointer" @click="doAnswer(index)">{{ index + 1 | convert }}</div>
       <div :class="{activeFont: item.isAnswer}" class="mousePointer" @click="doAnswer(index)">{{ item.metas }}</div>
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div>
         <span class="font-bold">【参考答案】</span> {{ Number(choiceQuestion.answer) + 1 | convert }}
-        <span class="Ml-10">【得分】<span class="getScore">{{ choiceQuestion.score }}</span>分</span>
+        <span class="Ml-10">【得分】<span class="getScore">{{ choiceQuestion.userScore }}</span>分</span>
       </div>
     </div>
     <div v-if="lookWrong">
@@ -55,10 +55,14 @@
     },
     created() {
       this.options = JSON.parse(this.choiceQuestion.metas).choices.map((item, index) => {
+        let isAnswer = false
+        if (this.choiceQuestion.userAnswer !== undefined && this.choiceQuestion.userAnswer !== null) {
+          isAnswer = (index === Number(this.choiceQuestion.userAnswer))
+        }
         return {
           id: index,
           metas: item,
-          isAnswer: false
+          isAnswer: isAnswer
         }
       })
     },

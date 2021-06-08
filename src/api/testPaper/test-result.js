@@ -11,3 +11,15 @@ export function list(query) {
     params: query
   })
 }
+
+/**
+ * 查询考试结果详情
+ * @returns {AxiosPromise}
+ */
+export function detail(query) {
+  return request({
+    url: '/xxx/exam/result/detail',
+    method: 'get',
+    params: query
+  })
+}

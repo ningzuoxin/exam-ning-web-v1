@@ -15,12 +15,12 @@
     </div>
     <div v-if="lookWrong" class="Mb-20">
       <div>
-        <span class="font-bold">【参考答案】</span> {{ Number(choiceQuestion.answer) + 1 | convertArr }}
-        <span class="Ml-10">【得分】<span class="getScore">{{ choiceQuestion.score }}</span>分</span>
+        <span class="font-bold">【参考答案】</span> {{ choiceMultiQuestion.answer | convertQuestionAnswer('choice_multi') }}
+        <span class="Ml-10">【得分】<span class="getScore">{{ choiceMultiQuestion.userScore }}</span>分</span>
       </div>
     </div>
     <div v-if="lookWrong">
-      <div><span class="font-bold">【解析】</span> {{ $isNull(choiceQuestion.analysis)?'无':choiceQuestion.analysis }}</div>
+      <div><span class="font-bold">【解析】</span> {{ $isNull(choiceMultiQuestion.analysis)?'无':choiceMultiQuestion.analysis }}</div>
     </div>
   </div>
 </template>
@@ -55,10 +55,15 @@
     },
     created() {
       this.options = JSON.parse(this.choiceMultiQuestion.metas).choices.map((item, index) => {
+        let isAnswer = false
+        if (this.choiceMultiQuestion.userAnswer !== undefined && this.choiceMultiQuestion.userAnswer !== null) {
+          const userAnswer = JSON.parse(this.choiceMultiQuestion.userAnswer)
+          isAnswer = userAnswer.indexOf(index) !== -1
+        }
         return {
           metas: item,
           id: index,
-          isAnswer: false
+          isAnswer: isAnswer
         }
       })
     },
