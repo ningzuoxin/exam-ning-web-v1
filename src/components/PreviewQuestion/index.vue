@@ -19,20 +19,18 @@
         @input.native="fillAnswer"/>
     </div>
     <div v-if="lookWrong" class="Mb-20">
-      <div v-if="!isMarking" class="box-start align-stretch">
-        <span class="font-bold">【参考答案】</span>
-        <div class="rest">{{ questionQuestion.answer }}</div>
-        <span class="Ml-10">【得分】<span class="getScore2">{{ questionQuestion.score }}</span>分</span>
+      <div v-if="!isMark">
+        <div class="Mb-20"><span class="font-bold">【参考答案】</span> {{ questionQuestion.answer }}</div>
+        <div class="Mb-20"><span class="font-bold">【得分】</span> {{ questionQuestion.userScore }}分</div>
       </div>
-      <div v-else class="box-start align-stretch">
-        <span class="font-bold">【参考答案】</span>
-        <div class="rest">{{ questionQuestion.answer }}</div>
-        <div class="Ml-10">【得分】<input v-model="questionQuestion.score" class="getScore pl-5">分</div>
+      <div v-else>
+        <div class="Mb-20"><span class="font-bold">【参考答案】</span> {{ questionQuestion.answer }}</div>
+        <div class="Mb-20"><span class="font-bold">【打分】</span> <input v-model="markedScore" @blur="markScore" class="getScore pl-5">&nbsp;分
+        </div>
       </div>
     </div>
     <div v-if="lookWrong">
-      <div><span class="font-bold">【解析】</span> {{ $isNull(questionQuestion.analysis)?'无':questionQuestion.analysis }}
-      </div>
+      <div><span class="font-bold">【解析】</span> {{ $isNull(questionQuestion.analysis)?'无':questionQuestion.analysis }}</div>
     </div>
   </div>
 </template>
@@ -51,7 +49,7 @@
         type: Boolean,
         default: false
       },
-      isMarking: {
+      isMark: {
         type: Boolean,
         default: false
       },
@@ -62,13 +60,19 @@
     },
     data() {
       return {
-        answerValue: this.lookWrong ? this.questionQuestion.answer : null,
+        answerValue: this.lookWrong ? this.questionQuestion.userAnswer : null,
         answerData: {
           questionId: this.questionQuestion.id,
           isDone: false,
           isSign: false,
           answer: ''
-        }
+        },
+        markedScore: this.questionQuestion.score
+      }
+    },
+    created() {
+      if (this.isMark) {
+        this.markScore()
       }
     },
     methods: {
@@ -77,10 +81,10 @@
       }, 500),
       // 答题
       doAnswer() {
-        if (this.lookWrong && !this.isMarking) {
+        if (this.lookWrong && !this.isMark) {
           return
         }
-        if (this.isMarking) {
+        if (this.isMark) {
           this.answerData.score = this.answerData.score.replace(/[^\d]/g, '')
         }
         if (!this.$isNull(this.answerValue)) {
@@ -98,6 +102,14 @@
         }
         this.answerData.isSign = !this.answerData.isSign
         this.$emit('doAnswer', this.answerData)
+      },
+      // 打分
+      markScore() {
+        const data = {
+          questionId: this.answerData.questionId,
+          score: this.markedScore
+        }
+        this.$emit('markScore', data)
       }
     }
   }
@@ -113,8 +125,12 @@
   .getScore {
     width: 50px;
     border-radius: 5px;
-    height: 20px;
-    border: 1px solid #EAEAEA
+    height: 32px;
+    line-height: 32px;
+    padding-left: 5px;
+    font-weight: bold;
+    color: firebrick;
+    border: 1px solid #000000;
   }
 
   .getScore:focus {

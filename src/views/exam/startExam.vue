@@ -289,7 +289,6 @@
         }
 
         submit(params).then(response => {
-          console.log(response.data)
           this.$message({ type: 'success', message: '交卷完毕！' })
           loading.close()
           this.$router.push({ path: '/exam/listExam' })

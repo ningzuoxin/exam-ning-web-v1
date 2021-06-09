@@ -25,7 +25,7 @@
           <previewChoiceMultiList v-show="typeIndex===2" :choiceMultiQuestions="choiceMultiQuestions" :lookWrong="true" @nextGroup="nextGroup"/>
           <previewTrueFalseList v-show="typeIndex===3" :trueFalseQuestions="trueFalseQuestions" :lookWrong="true" @nextGroup="nextGroup"/>
           <previewFillBlankList v-show="typeIndex===4" :fillBlankQuestions="fillBlankQuestions" :lookWrong="true" @nextGroup="nextGroup"/>
-          <previewQuestionList v-show="typeIndex===5" :questionQuestions="questionQuestions" :lookWrong="true"/>
+          <previewQuestionList v-show="typeIndex===5" :questionQuestions="questionQuestions" :lookWrong="true" :isMark="true" @markScore="markScore" @doMark="doMark"/>
         </div>
       </div>
     </div>
@@ -38,10 +38,10 @@
   import previewTrueFalseList from '@/views/testPaper/components/preview/previewTrueFalseList'
   import previewFillBlankList from '@/views/testPaper/components/preview/previewFillBlankList'
   import previewQuestionList from '@/views/testPaper/components/preview/previewQuestionList'
-  import { detail } from '@/api/testPaper/test-result'
+  import { detail, doMark } from '@/api/testPaper/test-result'
 
   export default {
-    name: 'ShowTestPaperResultDetail',
+    name: 'MarkExam',
     components: {
       previewChoiceList,
       previewChoiceMultiList,
@@ -51,7 +51,7 @@
     },
     data() {
       return {
-        typeIndex: 1,
+        typeIndex: 5,
         // 试卷名
         testPaperName: '',
         totalScore: 0,
@@ -72,6 +72,18 @@
     computed: {
       testResultId() {
         return this.$route.query.id
+      },
+      // 所有问答题得分
+      itemResultScores() {
+        const scores = []
+        this.questionQuestions.forEach((question) => {
+          scores.push({
+            id: question.itemResultId,
+            questionId: question.id,
+            score: 0
+          })
+        })
+        return scores
       }
     },
     created() {
@@ -131,6 +143,7 @@
           this.questionQuestions = this.questionQuestions.map(question => {
             const item = data.examTestPaperItems.find(item => item.questionId === question.id)
             const itemResult = data.examTestPaperItemResults.find(item => item.questionId === question.id)
+            question.itemResultId = itemResult.id
             question.score = item.score
             question.userScore = itemResult.score
             question.userAnswer = itemResult.answer
@@ -146,7 +159,24 @@
       },
       back() {
         this.$router.push({
-          path: '/exam/listExam'
+          path: '/exam/listMark'
+        })
+      },
+      markScore(data) {
+        const questionId = data.questionId
+        const item = this.itemResultScores.find(item => item.questionId === questionId)
+        this.$set(item, 'score', data.score)
+      },
+      // 确认打分
+      doMark() {
+        const params = {
+          resultId: this.testResultId,
+          markScoreItems: this.itemResultScores
+        }
+        
+        doMark(params).then(response => {
+          this.$message({ type: 'success', message: '打分完毕！' })
+          this.$router.push({ path: '/exam/listExam' })
         })
       }
     }

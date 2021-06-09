@@ -141,16 +141,23 @@ export const constantRoutes = [
         meta: { title: '考试列表', icon: 'el-icon-tickets' }
       },
       {
-        path: 'markExam',
-        name: 'markExam',
-        component: () => import('@/views/exam/listExam'),
-        meta: { title: '试卷批阅', icon: 'el-icon-tickets' }
+        path: 'listMark',
+        name: 'ListMark',
+        component: () => import('@/views/exam/listMark'),
+        meta: { title: '批阅试卷', icon: 'el-icon-tickets' }
       },
       {
         path: 'showTestPaperResultDetail',
         name: 'ShowTestPaperResultDetail',
         component: () => import('@/views/exam/showTestPaperResultDetail'),
         meta: { title: '查看试卷', level: 2, noCache: true },
+        hidden: true
+      },
+      {
+        path: 'markExam',
+        name: 'MarkExam',
+        component: () => import('@/views/exam/markExam'),
+        meta: { title: '阅卷', level: 2, noCache: true },
         hidden: true
       }
     ]

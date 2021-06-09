@@ -23,3 +23,27 @@ export function detail(query) {
     params: query
   })
 }
+
+/**
+ * 查询待批阅列表
+ * @returns {AxiosPromise}
+ */
+export function marks(query) {
+  return request({
+    url: '/xxx/exam/result/marks',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
+ * 打分
+ * @returns {AxiosPromise}
+ */
+export function doMark(params) {
+  return request({
+    url: '/xxx/exam/result/doMark',
+    method: 'post',
+    data: params
+  })
+}
