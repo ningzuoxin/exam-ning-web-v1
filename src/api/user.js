@@ -1,10 +1,15 @@
 import request from '@/utils/request'
 
-export function login(data) {
+const client_id = 'ning666888'
+const client_secret = '888666'
+const grant_type = 'password'
+const scope = 'ningning'
+
+export function login(username, password) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/auth/oauth/token',
     method: 'post',
-    data
+    params: { username, password, client_id, client_secret, grant_type, scope }
   })
 }
 
