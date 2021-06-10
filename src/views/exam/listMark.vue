@@ -30,7 +30,7 @@
         label="耗时(分)"
         width="120">
         <template slot-scope="scope">
-          <span>{{ scope.row.usedTime / 60 }}</span>
+          <span>{{ (scope.row.usedTime/60).toFixed(1) }}</span>
         </template>
       </el-table-column>
       <el-table-column
