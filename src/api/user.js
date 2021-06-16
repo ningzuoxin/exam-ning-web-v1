@@ -15,15 +15,15 @@ export function login(username, password) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: '/user/getInfo',
     method: 'get',
-    params: { token }
+    params: { access_token: token }
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url: '/auth/oauth/logout',
+    method: 'get'
   })
 }

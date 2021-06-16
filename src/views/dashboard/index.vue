@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">欢迎使用微服务考试平台</div>
+    <div class="dashboard-text">欢迎 <i style="font-weight: bold;">{{ name }}</i> 使用微服务考试平台</div>
   </div>
 </template>
 
