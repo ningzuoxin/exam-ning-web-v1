@@ -70,6 +70,12 @@ export const constantRoutes = [
         meta: { title: '用户列表', icon: 'el-icon-tickets' }
       },
       {
+        path: 'listRole',
+        name: 'ListRole',
+        component: () => import('@/views/role/listRole'),
+        meta: { title: '角色列表', icon: 'el-icon-tickets' }
+      },
+      {
         path: 'add',
         name: 'AddUser',
         component: () => import('@/views/user/addUser'),
