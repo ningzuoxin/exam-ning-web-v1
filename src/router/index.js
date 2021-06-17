@@ -61,25 +61,46 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/user/index',
     name: 'User',
-    meta: { title: '用户管理', icon: 'el-icon-user-solid' },
+    meta: { title: '系统管理', icon: 'el-icon-user-solid' },
     children: [
       {
         path: 'index',
         name: 'IndexUser',
         component: () => import('@/views/user/index'),
-        meta: { title: '用户列表', icon: 'el-icon-tickets' }
+        meta: { title: '用户管理', icon: 'el-icon-tickets' }
       },
       {
         path: 'listRole',
         name: 'ListRole',
         component: () => import('@/views/role/listRole'),
-        meta: { title: '角色列表', icon: 'el-icon-tickets' }
+        meta: { title: '角色管理', icon: 'el-icon-tickets' }
+      },
+      {
+        path: 'listMenu',
+        name: 'ListMenu',
+        component: () => import('@/views/menu/listMenu'),
+        meta: { title: '菜单管理', icon: 'el-icon-tickets' }
       },
       {
         path: 'add',
         name: 'AddUser',
         component: () => import('@/views/user/addUser'),
-        meta: { title: '添加用户', icon: 'el-icon-document-add' }
+        meta: { title: '添加用户', icon: 'el-icon-document-add' },
+        hidden: true
+      },
+      {
+        path: 'addRole',
+        name: 'AddRole',
+        component: () => import('@/views/role/addRole'),
+        meta: { title: '添加角色', icon: 'el-icon-document-add' },
+        hidden: true
+      },
+      {
+        path: 'addMenu',
+        name: 'AddMenu',
+        component: () => import('@/views/menu/addMenu'),
+        meta: { title: '添加菜单', icon: 'el-icon-document-add' },
+        hidden: true
       },
       {
         path: 'update/:id',

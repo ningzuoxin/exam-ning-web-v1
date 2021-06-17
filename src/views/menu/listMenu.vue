@@ -21,20 +21,45 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="roleName"
-        label="角色名称">
+        prop="menuName"
+        label="菜单名称">
       </el-table-column>
       <el-table-column
-        prop="roleKey"
-        label="角色代码">
+        prop="path"
+        label="路由地址">
       </el-table-column>
       <el-table-column
-        prop="roleSort"
+        prop="component"
+        label="组件路径">
+      </el-table-column>
+      <el-table-column
+        prop="isFrame"
+        label="是否为外链">
+        <template slot-scope="scope">
+          <span>{{ scope.row.isFrame === 0 ? '是' : '否' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="menuType"
+        label="菜单类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.menuType === 'M'">目录</span>
+          <span v-if="scope.row.menuType === 'C'">菜单</span>
+          <span v-if="scope.row.menuType === 'F'">按钮</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="orderNum"
         label="显示顺序">
       </el-table-column>
       <el-table-column
+        prop="icon"
+        label="菜单图标">
+      </el-table-column>
+      <el-table-column
         prop="createTime"
-        label="创建时间">
+        label="创建时间"
+        width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
@@ -63,11 +88,10 @@
 </template>
 
 <script>
-  import { listUser, deleteUser } from '@/api/user/user'
-  import { listRole } from '@/api/system/role'
+  import { listMenu } from '@/api/system/menu'
 
   export default {
-    name: 'ListRole',
+    name: 'ListMenu',
     data() {
       return {
         tableData: [],
@@ -85,7 +109,7 @@
     methods: {
       getList() {
         const params = { 'keyword': this.query.keyWord, 'pNum': this.query.currentPage, 'pSize': this.query.pageSize }
-        listRole(params).then(response => {
+        listMenu(params).then(response => {
           const data = response.data
           this.query.currentPage = data.current
           this.query.total = data.total
@@ -93,7 +117,7 @@
         })
       },
       handleAdd() {
-        this.$router.push({ path: '/user/addRole' })
+        this.$router.push({ path: '/user/addMenu' })
       },
       handleUpdate(id) {
         if (id) {
@@ -107,7 +131,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function() {
-          return deleteUser(id)
+
         }).then(() => {
           this.msgSuccess('删除成功')
           this.getList()
