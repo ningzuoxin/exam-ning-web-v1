@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="父级菜单">
         <el-select v-model="form.parentId">
-          <el-option label="一级目录" :value="0" />
+          <el-option label="一级目录" :value="0"/>
           <el-option v-for="(item,index) in parentMenus" :label="item.menuName" :value="item.menuId" :key="index"/>
         </el-select>
       </el-form-item>
@@ -30,6 +30,12 @@
           <el-radio label="M">目录</el-radio>
           <el-radio label="C">菜单</el-radio>
           <el-radio label="F">按钮</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="菜单状态">
+        <el-radio-group v-model="form.visible">
+          <el-radio label="0">显示</el-radio>
+          <el-radio label="1">隐藏</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="权限标识" prop="perms">
@@ -73,11 +79,24 @@
           component: '',
           isFrame: 1,
           menuType: 'F',
+          visible: '1',
           perms: '',
           icon: '#',
           remark: ''
         },
         parentMenus: []
+      }
+    },
+    watch: {
+      'form.menuType': {
+        handler(val, oldVal) {
+          if (val === 'M' || val === 'C') {
+            this.form.visible = '0'
+          } else {
+            this.form.visible = '1'
+          }
+        },
+        deep: true
       }
     },
     created() {
@@ -95,7 +114,7 @@
             addMenu(this.form).then(response => {
               if (response.code === 20000) {
                 this.msgSuccess('添加成功')
-                setTimeout(() => this.$router.push({ path: '/user/listMenu' }), 1000)
+                setTimeout(() => this.$router.push({ path: '/system/listMenu' }), 1000)
               }
             }).catch(function() {
             })

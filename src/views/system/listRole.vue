@@ -12,7 +12,7 @@
 
     <el-table
       :data="tableData"
-      height="400px"
+      height="calc(80vh - 80px)"
       border
       style="width: 100%">
       <el-table-column
@@ -93,11 +93,14 @@
         })
       },
       handleAdd() {
-        this.$router.push({ path: '/user/addRole' })
+        this.$router.push({ path: '/system/addRole' })
       },
       handleUpdate(id) {
         if (id) {
-          this.$router.push({ path: `/user/update/${id}` })
+          this.$router.push({
+            path: '/system/updateRole',
+            query: { id: id }
+          })
         }
       },
       handleDelete(row) {

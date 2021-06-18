@@ -78,7 +78,7 @@ export const constantRoutes = [
         hidden: true
       },
       {
-        path: 'updateUser/:id',
+        path: 'updateUser',
         name: 'UpdateUser',
         component: () => import('@/views/system/updateUser'),
         meta: { title: '编辑用户', icon: 'el-icon-document-add' },

@@ -77,7 +77,7 @@
             addRole(this.form, params).then(response => {
               if (response.code === 20000) {
                 this.msgSuccess('添加成功')
-                setTimeout(() => this.$router.push({ path: '/user/listRole' }), 1000)
+                setTimeout(() => this.$router.push({ path: '/system/listRole' }), 1000)
               }
             }).catch(function() {
             })
