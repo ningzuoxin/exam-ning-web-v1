@@ -49,3 +49,14 @@ export function listMenuTree() {
     method: 'get'
   })
 }
+
+/**
+ * 查询路由
+ * @returns {AxiosPromise}
+ */
+export function getRouters() {
+  return request({
+    url: '/user/user/menu/getRouters',
+    method: 'get'
+  })
+}
