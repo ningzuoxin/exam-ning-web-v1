@@ -18,10 +18,11 @@ export function listRole(query) {
  * @param role
  * @returns {AxiosPromise}
  */
-export function addRole(role) {
+export function addRole(role, params) {
   return request({
     url: '/user/user/role/add',
     method: 'post',
-    data: role
+    data: role,
+    params: params
   })
 }

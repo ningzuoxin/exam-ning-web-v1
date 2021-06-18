@@ -13,6 +13,14 @@
       <el-form-item label="备注">
         <el-input v-model="form.remark"></el-input>
       </el-form-item>
+      <el-form-item label="授权">
+        <el-tree
+          ref="tree"
+          :data="treeData"
+          show-checkbox
+          node-key="id">
+        </el-tree>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">添加</el-button>
         <el-button @click="onCancel">重置</el-button>
@@ -23,6 +31,7 @@
 
 <script>
   import { addRole } from '@/api/system/role'
+  import { listMenuTree } from '@/api/system/menu'
 
   export default {
     name: 'AddRole',
@@ -42,14 +51,30 @@
           roleKey: '',
           roleSort: 0,
           remark: ''
-        }
+        },
+        treeData: []
       }
+    },
+    created() {
+      listMenuTree().then(response => {
+        if (response.code === 20000) {
+          this.treeData = response.data
+        }
+      }).catch(function() {
+      })
     },
     methods: {
       onSubmit() {
+        const keys = this.$refs.tree.getCheckedKeys()
+        if (keys.length === 0) {
+          this.msgError('请选择授权信息')
+          return
+        }
+
         this.$refs['form'].validate(valid => {
           if (valid) {
-            addRole(this.form).then(response => {
+            const params = { menuIds: keys.toString() }
+            addRole(this.form, params).then(response => {
               if (response.code === 20000) {
                 this.msgSuccess('添加成功')
                 setTimeout(() => this.$router.push({ path: '/user/listRole' }), 1000)

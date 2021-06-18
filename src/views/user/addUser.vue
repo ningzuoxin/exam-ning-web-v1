@@ -98,7 +98,7 @@
             addUser(this.form).then(response => {
               if (response.code === 20000) {
                 this.msgSuccess('添加成功')
-                setTimeout(() => this.$router.push({ path: '/user/index' }), 1000)
+                setTimeout(() => this.$router.push({ path: '/system/listUser' }), 1000)
               }
             }).catch(function() {
             })

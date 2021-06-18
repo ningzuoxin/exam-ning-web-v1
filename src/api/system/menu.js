@@ -37,3 +37,15 @@ export function queryMC() {
     method: 'get'
   })
 }
+
+/**
+ * 查询菜单树形列表
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listMenuTree() {
+  return request({
+    url: '/user/user/menu/tree',
+    method: 'get'
+  })
+}

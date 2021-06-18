@@ -12,7 +12,7 @@
 
     <el-table
       :data="tableData"
-      height="400px"
+      height="calc(80vh - 80px)"
       border
       style="width: 100%">
       <el-table-column
@@ -86,7 +86,7 @@
   import { listUser, deleteUser } from '@/api/user/user'
 
   export default {
-    name: 'Index',
+    name: 'ListUser',
     data() {
       return {
         tableData: [],
@@ -112,11 +112,11 @@
         })
       },
       handleAdd() {
-        this.$router.push({ path: '/user/add' })
+        this.$router.push({ path: '/system/addUser' })
       },
       handleUpdate(id) {
         if (id) {
-          this.$router.push({ path: `/user/update/${id}` })
+          this.$router.push({ path: `/system/updateUser/${id}` })
         }
       },
       handleDelete(row) {

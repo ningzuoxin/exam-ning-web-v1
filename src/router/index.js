@@ -55,38 +55,41 @@ export const constantRoutes = [
     }]
   },
 
-  // 用户模块路由
+  // 系统管理模块路由
   {
-    path: '/user',
+    path: '/system',
     component: Layout,
-    redirect: '/user/index',
-    name: 'User',
+    redirect: '/system/listUser',
+    name: 'System',
     meta: { title: '系统管理', icon: 'el-icon-user-solid' },
     children: [
+      // 用户管理
       {
-        path: 'index',
-        name: 'IndexUser',
-        component: () => import('@/views/user/index'),
+        path: 'listUser',
+        name: 'ListUser',
+        component: () => import('@/views/user/listUser'),
         meta: { title: '用户管理', icon: 'el-icon-tickets' }
       },
+      {
+        path: 'addUser',
+        name: 'AddUser',
+        component: () => import('@/views/user/addUser'),
+        meta: { title: '添加用户', icon: 'el-icon-document-add' },
+        hidden: true
+      },
+      {
+        path: 'updateUser/:id',
+        name: 'UpdateUser',
+        component: () => import('@/views/user/updateUser'),
+        meta: { title: '编辑用户', icon: 'el-icon-document-add' },
+        hidden: true
+      },
+      // 角色管理
       {
         path: 'listRole',
         name: 'ListRole',
         component: () => import('@/views/role/listRole'),
         meta: { title: '角色管理', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'listMenu',
-        name: 'ListMenu',
-        component: () => import('@/views/menu/listMenu'),
-        meta: { title: '菜单管理', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'add',
-        name: 'AddUser',
-        component: () => import('@/views/user/addUser'),
-        meta: { title: '添加用户', icon: 'el-icon-document-add' },
-        hidden: true
       },
       {
         path: 'addRole',
@@ -95,22 +98,23 @@ export const constantRoutes = [
         meta: { title: '添加角色', icon: 'el-icon-document-add' },
         hidden: true
       },
+      // 菜单管理
+      {
+        path: 'listMenu',
+        name: 'ListMenu',
+        component: () => import('@/views/menu/listMenu'),
+        meta: { title: '菜单管理', icon: 'el-icon-tickets' }
+      },
       {
         path: 'addMenu',
         name: 'AddMenu',
         component: () => import('@/views/menu/addMenu'),
         meta: { title: '添加菜单', icon: 'el-icon-document-add' },
         hidden: true
-      },
-      {
-        path: 'update/:id',
-        name: 'UpdateUser',
-        component: () => import('@/views/user/updateUser'),
-        meta: { title: '编辑用户', icon: 'el-icon-document-add' },
-        hidden: true
       }
     ]
   },
+
   // 试卷模块路由
   {
     path: '/testPaper',
@@ -153,6 +157,7 @@ export const constantRoutes = [
       }
     ]
   },
+
   // 考试模块路由
   {
     path: '/exam',
@@ -189,6 +194,7 @@ export const constantRoutes = [
       }
     ]
   },
+
   // 开始考试
   {
     path: '/startExam',
@@ -196,6 +202,7 @@ export const constantRoutes = [
     component: () => import('@/views/exam/startExam'),
     hidden: true
   },
+
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
