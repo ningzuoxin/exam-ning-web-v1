@@ -67,20 +67,20 @@ export const constantRoutes = [
       {
         path: 'listUser',
         name: 'ListUser',
-        component: () => import('@/views/user/listUser'),
+        component: () => import('@/views/system/listUser'),
         meta: { title: '用户管理', icon: 'el-icon-tickets' }
       },
       {
         path: 'addUser',
         name: 'AddUser',
-        component: () => import('@/views/user/addUser'),
+        component: () => import('@/views/system/addUser'),
         meta: { title: '添加用户', icon: 'el-icon-document-add' },
         hidden: true
       },
       {
         path: 'updateUser/:id',
         name: 'UpdateUser',
-        component: () => import('@/views/user/updateUser'),
+        component: () => import('@/views/system/updateUser'),
         meta: { title: '编辑用户', icon: 'el-icon-document-add' },
         hidden: true
       },
@@ -88,13 +88,13 @@ export const constantRoutes = [
       {
         path: 'listRole',
         name: 'ListRole',
-        component: () => import('@/views/role/listRole'),
+        component: () => import('@/views/system/listRole'),
         meta: { title: '角色管理', icon: 'el-icon-tickets' }
       },
       {
         path: 'addRole',
         name: 'AddRole',
-        component: () => import('@/views/role/addRole'),
+        component: () => import('@/views/system/addRole'),
         meta: { title: '添加角色', icon: 'el-icon-document-add' },
         hidden: true
       },
@@ -102,13 +102,13 @@ export const constantRoutes = [
       {
         path: 'listMenu',
         name: 'ListMenu',
-        component: () => import('@/views/menu/listMenu'),
+        component: () => import('@/views/system/listMenu'),
         meta: { title: '菜单管理', icon: 'el-icon-tickets' }
       },
       {
         path: 'addMenu',
         name: 'AddMenu',
-        component: () => import('@/views/menu/addMenu'),
+        component: () => import('@/views/system/addMenu'),
         meta: { title: '添加菜单', icon: 'el-icon-document-add' },
         hidden: true
       }

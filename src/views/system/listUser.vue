@@ -116,7 +116,10 @@
       },
       handleUpdate(id) {
         if (id) {
-          this.$router.push({ path: `/system/updateUser/${id}` })
+          this.$router.push({
+            path: '/system/updateUser',
+            params: { id: id }
+          })
         }
       },
       handleDelete(row) {
