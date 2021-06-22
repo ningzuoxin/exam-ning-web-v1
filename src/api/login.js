@@ -13,11 +13,10 @@ export function login(username, password) {
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/user/getInfo',
-    method: 'get',
-    params: { access_token: token }
+    url: '/system/getInfo',
+    method: 'get'
   })
 }
 

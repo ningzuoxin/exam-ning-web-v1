@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { getUser, editUser } from '@/api/user/user'
+  import { getUser, editUser } from '@/api/system/user'
 
   export default {
     name: 'UpdateUser',

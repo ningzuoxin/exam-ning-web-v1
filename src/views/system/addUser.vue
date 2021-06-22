@@ -45,7 +45,7 @@
 </template>
 
 <script>
-  import { addUser } from '@/api/user/user'
+  import { addUser } from '@/api/system/user'
 
   export default {
     name: 'AddUser',

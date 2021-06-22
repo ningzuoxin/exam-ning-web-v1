@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listMenu(query) {
   return request({
-    url: '/user/user/menu/page',
+    url: '/system/menu/page',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export function listMenu(query) {
  */
 export function addMenu(menu) {
   return request({
-    url: '/user/user/menu/add',
+    url: '/system/menu/add',
     method: 'post',
     data: menu
   })
@@ -33,7 +33,7 @@ export function addMenu(menu) {
  */
 export function queryMC() {
   return request({
-    url: '/user/user/menu/queryMC',
+    url: '/system/menu/queryMC',
     method: 'get'
   })
 }
@@ -45,7 +45,7 @@ export function queryMC() {
  */
 export function listMenuTree() {
   return request({
-    url: '/user/user/menu/tree',
+    url: '/system/menu/tree',
     method: 'get'
   })
 }
@@ -56,7 +56,7 @@ export function listMenuTree() {
  */
 export function getRouters() {
   return request({
-    url: '/user/user/menu/getRouters',
+    url: '/system/menu/getRouters',
     method: 'get'
   })
 }

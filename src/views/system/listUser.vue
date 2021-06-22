@@ -83,7 +83,7 @@
 </template>
 
 <script>
-  import { listUser, deleteUser } from '@/api/user/user'
+  import { listUser, deleteUser } from '@/api/system/user'
 
   export default {
     name: 'ListUser',

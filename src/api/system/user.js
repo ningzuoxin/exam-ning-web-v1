@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listUser(query) {
   return request({
-    url: '/user/user/page',
+    url: '/system/user/page',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export function listUser(query) {
  */
 export function getUser(query) {
   return request({
-    url: '/user/user/get',
+    url: '/system/user/get',
     method: 'get',
     params: query
   })
@@ -33,7 +33,7 @@ export function getUser(query) {
  */
 export function addUser(user) {
   return request({
-    url: '/user/user/add',
+    url: '/system/user/add',
     method: 'post',
     data: user
   })
@@ -46,7 +46,7 @@ export function addUser(user) {
  */
 export function editUser(user) {
   return request({
-    url: '/user/user/edit',
+    url: '/system/user/update',
     method: 'post',
     data: user
   })
@@ -59,7 +59,7 @@ export function editUser(user) {
  */
 export function deleteUser(id) {
   return request({
-    url: '/user/user/delete',
+    url: '/system/user/delete',
     method: 'post',
     params: { id: id }
   })
