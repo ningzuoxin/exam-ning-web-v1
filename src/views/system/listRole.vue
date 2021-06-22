@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row.id)">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row.roleId)">
             修改
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import { listUser, deleteUser } from '@/api/system/user'
+  import { deleteUser } from '@/api/system/user'
   import { listRole } from '@/api/system/role'
 
   export default {
@@ -93,7 +93,9 @@
         })
       },
       handleAdd() {
-        this.$router.push({ path: '/system/addRole' })
+        this.$router.push({
+          path: '/system/addRole'
+        })
       },
       handleUpdate(id) {
         if (id) {
