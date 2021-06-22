@@ -66,3 +66,15 @@ export function updateRole(role, params) {
     params: params
   })
 }
+
+/**
+ * 查询所有角色
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function listAllRole() {
+  return request({
+    url: '/system/role/list',
+    method: 'get'
+  })
+}

@@ -117,8 +117,8 @@
       handleUpdate(id) {
         if (id) {
           this.$router.push({
-            name: 'UpdateUser',
-            params: { id: id }
+            path: '/system/updateUser',
+            query: { id: id }
           })
         }
       },

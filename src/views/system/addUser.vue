@@ -16,6 +16,12 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname"></el-input>
       </el-form-item>
+      <el-form-item label="角色">
+        <el-select v-model="form.roleId">
+          <el-option label="请选择角色" :value="0"/>
+          <el-option v-for="(item,index) in roles" :label="item.roleName" :value="item.roleId" :key="index"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="form.gender">
           <el-radio :label="1">男</el-radio>
@@ -38,7 +44,6 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">添加</el-button>
-        <el-button @click="onCancel">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -46,6 +51,7 @@
 
 <script>
   import { addUser } from '@/api/system/user'
+  import { listAllRole } from '@/api/system/role'
 
   export default {
     name: 'AddUser',
@@ -87,9 +93,14 @@
           mobile: '',
           nickname: '',
           gender: 2,
-          idcard: ''
-        }
+          idcard: '',
+          roleId: 0
+        },
+        roles: []
       }
+    },
+    created() {
+      this.listAllRole()
     },
     methods: {
       onSubmit() {
@@ -103,12 +114,6 @@
             }).catch(function() {
             })
           }
-        })
-      },
-      onCancel() {
-        this.$message({
-          message: 'cancel!',
-          type: 'warning'
         })
       },
       handleAvatarSuccess(res, file) {
@@ -125,6 +130,14 @@
           this.$message.error('上传头像图片大小不能超过 2MB!')
         }
         return isJPG && isLt2M
+      },
+      listAllRole() {
+        listAllRole().then(response => {
+          if (response.code === 20000) {
+            this.roles = response.data
+          }
+        }).catch(function() {
+        })
       }
     }
   }

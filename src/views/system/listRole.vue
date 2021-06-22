@@ -63,8 +63,7 @@
 </template>
 
 <script>
-  import { deleteUser } from '@/api/system/user'
-  import { listRole } from '@/api/system/role'
+  import { listRole, deleteRole } from '@/api/system/role'
 
   export default {
     name: 'ListRole',
@@ -106,13 +105,13 @@
         }
       },
       handleDelete(row) {
-        const id = row.id
+        const params = { id: row.roleId }
         this.$confirm('是否确认删除该条数据?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function() {
-          return deleteUser(id)
+          return deleteRole(params)
         }).then(() => {
           this.msgSuccess('删除成功')
           this.getList()

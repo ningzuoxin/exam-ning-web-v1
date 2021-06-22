@@ -10,6 +10,12 @@
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname"></el-input>
       </el-form-item>
+      <el-form-item label="角色">
+        <el-select v-model="form.roleId">
+          <el-option label="请选择角色" :value="0"/>
+          <el-option v-for="(item,index) in roles" :label="item.roleName" :value="item.roleId" :key="index"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="form.gender">
           <el-radio :label="1">男</el-radio>
@@ -40,6 +46,7 @@
 
 <script>
   import { getUser, editUser } from '@/api/system/user'
+  import { listAllRole } from '@/api/system/role'
 
   export default {
     name: 'UpdateUser',
@@ -74,19 +81,20 @@
           mobile: '',
           nickname: '',
           gender: 2,
-          idcard: ''
-        }
+          idcard: '',
+          roleId: 0
+        },
+        roles: []
+      }
+    },
+    computed: {
+      userId() {
+        return this.$route.query.id
       }
     },
     created() {
-      this.form.id = this.$route.params.id
-      const query = { id: this.form.id }
-      getUser(query).then(response => {
-        if (response.code === 20000) {
-          this.form = response.data
-        }
-      }).catch(function() {
-      })
+      this.get()
+      this.listAllRole()
     },
     methods: {
       onSubmit() {
@@ -122,6 +130,23 @@
           this.$message.error('上传头像图片大小不能超过 2MB!')
         }
         return isJPG && isLt2M
+      },
+      get() {
+        const query = { id: this.userId }
+        getUser(query).then(response => {
+          if (response.code === 20000) {
+            this.form = response.data
+          }
+        }).catch(function() {
+        })
+      },
+      listAllRole() {
+        listAllRole().then(response => {
+          if (response.code === 20000) {
+            this.roles = response.data
+          }
+        }).catch(function() {
+        })
       }
     }
   }
