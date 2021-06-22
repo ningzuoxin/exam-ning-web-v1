@@ -60,3 +60,42 @@ export function getRouters() {
     method: 'get'
   })
 }
+
+/**
+ * 查询菜单
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function getMenu(query) {
+  return request({
+    url: '/system/menu/get',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
+ * 修改菜单
+ * @param role
+ * @returns {AxiosPromise}
+ */
+export function updateMenu(menu) {
+  return request({
+    url: '/system/menu/update',
+    method: 'post',
+    data: menu
+  })
+}
+
+/**
+ * 删除菜单
+ * @param query
+ * @returns {AxiosPromise}
+ */
+export function deleteMenu(query) {
+  return request({
+    url: '/system/menu/delete',
+    method: 'get',
+    params: query
+  })
+}

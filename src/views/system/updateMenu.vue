@@ -48,7 +48,7 @@
         <el-input v-model="form.remark"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">添加</el-button>
+        <el-button type="primary" @click="onSubmit">提交</el-button>
         <el-button @click="onCancel">重置</el-button>
       </el-form-item>
     </el-form>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import { addMenu, queryMC } from '@/api/system/menu'
+  import { addMenu, queryMC, getMenu, updateMenu } from '@/api/system/menu'
 
   export default {
     name: 'UpdateMenu',
@@ -87,6 +87,11 @@
         parentMenus: []
       }
     },
+    computed: {
+      menuId() {
+        return this.$route.query.id
+      }
+    },
     watch: {
       'form.menuType': {
         handler(val, oldVal) {
@@ -100,6 +105,7 @@
       }
     },
     created() {
+      this.get()
       queryMC().then(response => {
         if (response.code === 20000) {
           this.parentMenus = response.data
@@ -125,6 +131,15 @@
         this.$message({
           message: 'cancel!',
           type: 'warning'
+        })
+      },
+      get() {
+        const params = { id: this.menuId }
+        getMenu(params).then(response => {
+          if (response.code === 20000) {
+            this.form = response.data
+          }
+        }).catch(function() {
         })
       }
     }
