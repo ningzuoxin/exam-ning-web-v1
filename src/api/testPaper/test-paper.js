@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function listTypes() {
   return request({
-    url: '/xxx/exam/testPaper/type',
+    url: '/exam/testPaper/type',
     method: 'get'
   })
 }
@@ -18,7 +18,7 @@ export function listTypes() {
  */
 export function add(params) {
   return request({
-    url: '/xxx/exam/testPaper/add',
+    url: '/exam/testPaper/add',
     method: 'post',
     data: params
   })
@@ -31,7 +31,7 @@ export function add(params) {
  */
 export function listTestPaper(query) {
   return request({
-    url: '/xxx/exam/testPaper/page',
+    url: '/exam/testPaper/page',
     method: 'get',
     params: query
   })
@@ -44,7 +44,7 @@ export function listTestPaper(query) {
  */
 export function preview(query) {
   return request({
-    url: '/xxx/exam/testPaper/preview',
+    url: '/exam/testPaper/preview',
     method: 'get',
     params: query
   })
@@ -57,7 +57,7 @@ export function preview(query) {
  */
 export function listExam(query) {
   return request({
-    url: '/xxx/exam/testPaper/listExam',
+    url: '/exam/testPaper/listExam',
     method: 'get',
     params: query
   })
@@ -70,7 +70,7 @@ export function listExam(query) {
  */
 export function submit(params) {
   return request({
-    url: '/xxx/exam/testPaper/submit',
+    url: '/exam/testPaper/submit',
     method: 'post',
     data: params
   })
@@ -83,7 +83,7 @@ export function submit(params) {
  */
 export function publish(query) {
   return request({
-    url: '/xxx/exam/testPaper/publish',
+    url: '/exam/testPaper/publish',
     method: 'get',
     params: query
   })
@@ -96,7 +96,7 @@ export function publish(query) {
  */
 export function deleteTestPaper(query) {
   return request({
-    url: '/xxx/exam/testPaper/delete',
+    url: '/exam/testPaper/delete',
     method: 'get',
     params: query
   })

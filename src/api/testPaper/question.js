@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listQuestion(query) {
   return request({
-    url: '/xxx/exam/question/page',
+    url: '/exam/question/page',
     method: 'get',
     params: query
   })
@@ -19,7 +19,7 @@ export function listQuestion(query) {
  */
 export function listTypes() {
   return request({
-    url: '/xxx/exam/question/type',
+    url: '/exam/question/type',
     method: 'get'
   })
 }
@@ -31,7 +31,7 @@ export function listTypes() {
  */
 export function add(params) {
   return request({
-    url: '/xxx/exam/question/add',
+    url: '/exam/question/add',
     method: 'post',
     data: params
   })

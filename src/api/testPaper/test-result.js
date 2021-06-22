@@ -6,7 +6,7 @@ import request from '@/utils/request'
  */
 export function list(query) {
   return request({
-    url: '/xxx/exam/result/list',
+    url: '/exam/result/list',
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function list(query) {
  */
 export function detail(query) {
   return request({
-    url: '/xxx/exam/result/detail',
+    url: '/exam/result/detail',
     method: 'get',
     params: query
   })
@@ -30,7 +30,7 @@ export function detail(query) {
  */
 export function marks(query) {
   return request({
-    url: '/xxx/exam/result/marks',
+    url: '/exam/result/marks',
     method: 'get',
     params: query
   })
@@ -42,7 +42,7 @@ export function marks(query) {
  */
 export function doMark(params) {
   return request({
-    url: '/xxx/exam/result/doMark',
+    url: '/exam/result/doMark',
     method: 'post',
     data: params
   })
