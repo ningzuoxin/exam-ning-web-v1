@@ -53,7 +53,7 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '微服务考试平台', icon: 'dashboard' }
     }]
-  },
+  }
 
   // 系统管理模块路由
   // {
@@ -116,92 +116,92 @@ export const constantRoutes = [
   // },
 
   // 试卷模块路由
-  {
-    path: '/testPaper',
-    component: Layout,
-    redirect: '/testPaper/listTestPaper',
-    name: 'TestPaper',
-    meta: { title: '试卷管理', icon: 'el-icon-document' },
-    children: [
-      {
-        path: 'listTestPaper',
-        name: 'ListTestPaper',
-        component: () => import('@/views/testPaper/listTestPaper'),
-        meta: { title: '试卷列表', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'addTestPaper',
-        name: 'AddTestPaper',
-        component: () => import('@/views/testPaper/addTestPaper'),
-        meta: { title: '添加试卷', icon: 'el-icon-document-add' }
-      },
-      {
-        path: 'previewTestPaper',
-        name: 'PreviewTestPaper',
-        component: () => import('@/views/testPaper/previewTestPaper'),
-        meta: { title: '预览试卷', level: 2, noCache: true },
-        hidden: true
-      },
-      {
-        path: 'listQuestion',
-        name: 'ListQuestion',
-        component: () => import('@/views/testPaper/listQuestion'),
-        meta: { title: '试题列表', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'addQuestion',
-        name: 'AddQuestion',
-        component: () => import('@/views/testPaper/addQuestion'),
-        meta: { title: '添加试题', level: 2, noCache: true },
-        hidden: true
-      }
-    ]
-  },
+  // {
+  //   path: '/testPaper',
+  //   component: Layout,
+  //   redirect: '/testPaper/listTestPaper',
+  //   name: 'TestPaper',
+  //   meta: { title: '试卷管理', icon: 'el-icon-document' },
+  //   children: [
+  //     {
+  //       path: 'listTestPaper',
+  //       name: 'ListTestPaper',
+  //       component: () => import('@/views/testPaper/listTestPaper'),
+  //       meta: { title: '试卷列表', icon: 'el-icon-tickets' }
+  //     },
+  //     {
+  //       path: 'addTestPaper',
+  //       name: 'AddTestPaper',
+  //       component: () => import('@/views/testPaper/addTestPaper'),
+  //       meta: { title: '添加试卷', icon: 'el-icon-document-add' }
+  //     },
+  //     {
+  //       path: 'previewTestPaper',
+  //       name: 'PreviewTestPaper',
+  //       component: () => import('@/views/testPaper/previewTestPaper'),
+  //       meta: { title: '预览试卷', level: 2, noCache: true },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'listQuestion',
+  //       name: 'ListQuestion',
+  //       component: () => import('@/views/testPaper/listQuestion'),
+  //       meta: { title: '试题列表', icon: 'el-icon-tickets' }
+  //     },
+  //     {
+  //       path: 'addQuestion',
+  //       name: 'AddQuestion',
+  //       component: () => import('@/views/testPaper/addQuestion'),
+  //       meta: { title: '添加试题', level: 2, noCache: true },
+  //       hidden: true
+  //     }
+  //   ]
+  // },
 
   // 考试模块路由
-  {
-    path: '/exam',
-    component: Layout,
-    redirect: '/exam/listExam',
-    name: 'Exam',
-    meta: { title: '考试中心', icon: 'el-icon-s-data' },
-    children: [
-      {
-        path: 'listExam',
-        name: 'ListExam',
-        component: () => import('@/views/exam/listExam'),
-        meta: { title: '考试列表', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'listMark',
-        name: 'ListMark',
-        component: () => import('@/views/exam/listMark'),
-        meta: { title: '批阅试卷', icon: 'el-icon-tickets' }
-      },
-      {
-        path: 'showTestPaperResultDetail',
-        name: 'ShowTestPaperResultDetail',
-        component: () => import('@/views/exam/showTestPaperResultDetail'),
-        meta: { title: '查看试卷', level: 2, noCache: true },
-        hidden: true
-      },
-      {
-        path: 'markExam',
-        name: 'MarkExam',
-        component: () => import('@/views/exam/markExam'),
-        meta: { title: '阅卷', level: 2, noCache: true },
-        hidden: true
-      }
-    ]
-  },
+  // {
+  //   path: '/exam',
+  //   component: Layout,
+  //   redirect: '/exam/listExam',
+  //   name: 'Exam',
+  //   meta: { title: '考试中心', icon: 'el-icon-s-data' },
+  //   children: [
+  //     {
+  //       path: 'listExam',
+  //       name: 'ListExam',
+  //       component: () => import('@/views/exam/listExam'),
+  //       meta: { title: '考试列表', icon: 'el-icon-tickets' }
+  //     },
+  //     {
+  //       path: 'listMark',
+  //       name: 'ListMark',
+  //       component: () => import('@/views/exam/listMark'),
+  //       meta: { title: '批阅试卷', icon: 'el-icon-tickets' }
+  //     },
+  //     {
+  //       path: 'showTestPaperResultDetail',
+  //       name: 'ShowTestPaperResultDetail',
+  //       component: () => import('@/views/exam/showTestPaperResultDetail'),
+  //       meta: { title: '查看试卷', level: 2, noCache: true },
+  //       hidden: true
+  //     },
+  //     {
+  //       path: 'markExam',
+  //       name: 'MarkExam',
+  //       component: () => import('@/views/exam/markExam'),
+  //       meta: { title: '阅卷', level: 2, noCache: true },
+  //       hidden: true
+  //     }
+  //   ]
+  // },
 
   // 开始考试
-  {
-    path: '/startExam',
-    name: 'StartExam',
-    component: () => import('@/views/exam/startExam'),
-    hidden: true
-  }
+  // {
+  //   path: '/startExam',
+  //   name: 'StartExam',
+  //   component: () => import('@/views/exam/startExam'),
+  //   hidden: true
+  // }
 
   // 404 page must be placed at the end !!!
   // { path: '*', redirect: '/404', hidden: true }
