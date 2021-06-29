@@ -66,7 +66,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row.id)">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row.menuId)">
             修改
           </el-button>
           <el-button size="mini" type="danger" @click="handleDelete(scope.row)">
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-  import { listMenu } from '@/api/system/menu'
+  import { listMenu, deleteMenu } from '@/api/system/menu'
 
   export default {
     name: 'ListMenu',
@@ -128,13 +128,13 @@
         }
       },
       handleDelete(row) {
-        const id = row.id
+        const id = row.menuId
         this.$confirm('是否确认删除该条数据?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function() {
-
+          deleteMenu({ id: id })
         }).then(() => {
           this.msgSuccess('删除成功')
           this.getList()
