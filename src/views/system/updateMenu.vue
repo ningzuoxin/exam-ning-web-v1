@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import { addMenu, queryMC, getMenu, updateMenu } from '@/api/system/menu'
+  import { queryMC, getMenu, updateMenu } from '@/api/system/menu'
 
   export default {
     name: 'UpdateMenu',
@@ -117,9 +117,9 @@
       onSubmit() {
         this.$refs['form'].validate(valid => {
           if (valid) {
-            addMenu(this.form).then(response => {
+            updateMenu(this.form).then(response => {
               if (response.code === 20000) {
-                this.msgSuccess('添加成功')
+                this.msgSuccess('修改成功')
                 setTimeout(() => this.$router.push({ path: '/system/listMenu' }), 1000)
               }
             }).catch(function() {

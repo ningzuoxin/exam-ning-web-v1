@@ -6,7 +6,9 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roles: [],
+    permissions: []
   }
 }
 
@@ -24,6 +26,12 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state, roles) => {
+    state.roles = roles
+  },
+  SET_PERMISSIONS: (state, permissions) => {
+    state.permissions = permissions
   }
 }
 
@@ -51,6 +59,13 @@ const actions = {
 
         if (!data) {
           return reject('Verification failed, please Login again.')
+        }
+
+        if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+          commit('SET_ROLES', data.roles)
+          commit('SET_PERMISSIONS', data.permissions)
+        } else {
+          commit('SET_ROLES', ['ROLE_DEFAULT'])
         }
 
         commit('SET_NAME', data.user.nickname)

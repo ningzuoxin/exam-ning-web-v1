@@ -12,6 +12,7 @@ import '@/styles/common.css'
 import App from './App'
 import store from './store'
 import router from './router'
+import permission from './directive/permission'
 import { parseTime, resetForm, addDateRange, selectDictLabel, handleTree } from '@/utils/ruoyi'
 import Pagination from '@/components/Pagination'
 
@@ -41,6 +42,8 @@ import { getBracketStr } from '@/utils/auth'
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
+
+Vue.use(permission)
 
 // register global utility filters.
 Object.keys(filters).forEach(key => {
