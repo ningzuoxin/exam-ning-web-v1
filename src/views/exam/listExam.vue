@@ -59,7 +59,8 @@
       </el-table-column>
       <el-table-column label="操作" align="left" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.times===0 || (scope.row.times - scope.row.resultTimes)>0" type="primary" size="mini" @click="startExam(scope.row.id)">开始考试</el-button>
+          <el-button v-if="scope.row.times===0 || (scope.row.times - scope.row.resultTimes)>0" type="primary" size="mini" @click="startExam(scope.row.id)">开始考试
+          </el-button>
           <el-button v-if="scope.row.resultTimes>0" type="primary" size="mini" @click="showResult(scope.row.id)">查看结果</el-button>
         </template>
       </el-table-column>
@@ -74,8 +75,8 @@
     />
 
     <!-- 选择试题弹出层 -->
-    <el-dialog :visible.sync="isShowDialog" :append-to-body="true" :close-on-click-modal="false" top="5vh" width="800px" style="padding: 0px;">
-      <ShowTestResult :resultTableData="resultTableData" />
+    <el-dialog :visible.sync="isShowDialog" :append-to-body="true" :close-on-click-modal="false" top="5vh" width="800px" style="padding:0px;">
+      <ShowTestResult :resultTableData="resultTableData"/>
     </el-dialog>
 
   </div>
@@ -118,8 +119,7 @@
         const params = {
           'type': this.query.type,
           'pNum': this.query.currentPage,
-          'pSize': this.query.pageSize,
-          'userId': 0
+          'pSize': this.query.pageSize
         }
         listExam(params).then(response => {
           const data = response.data
@@ -137,8 +137,7 @@
       showResult(id) {
         this.isShowDialog = true
         const params = {
-          'id': id,
-          'userId': 0
+          'id': id
         }
         list(params).then(response => {
           this.resultTableData = response.data
