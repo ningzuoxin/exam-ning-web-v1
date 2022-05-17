@@ -47,7 +47,7 @@ Github：https://github.com/ningzuoxin/exam-ning-springcloud-v1
 ![查看成绩](doc/imgs/08查看成绩.png)
 
 ## 部署文档
-1. 下载后端代码【https://gitee.com/ningzxspace/exam-ning-springcloud-v1.git 或 https://github.com/ningzuoxin/exam-ning-springcloud-v1】。
+1. 下载后端代码【https://gitee.com/ningzxspace/exam-ning-springcloud-v1 或 https://github.com/ningzuoxin/exam-ning-springcloud-v1】。
 2. 初始化数据库，数据库脚本文件在doc/sql目录，分别创建 exam-ning-springcloud-exam 和 exam-ning-springcloud-user 数据库，导入对应sql文件。 
 3. 启动Nacos，下载Nacos，运行startup.cmd。参考：https://nacos.io/zh-cn/docs/quick-start.html
 4. 启动Redis。参考：https://www.cnblogs.com/skmobi/p/11696620.html
