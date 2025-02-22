@@ -1,21 +1,29 @@
 import request from '@/utils/request'
 
-const client_id = 'ning666888'
-const client_secret = '888666'
+const client_id = 'ning168168'
+const client_secret = '168668'
 const grant_type = 'password'
-const scope = 'ningning'
+const basicAuth = btoa(`${client_id}:${client_secret}`)
 
 export function login(username, password) {
   return request({
-    url: '/auth/oauth/token',
+    url: '/auth/oauth2/token',
     method: 'post',
-    params: { username, password, client_id, client_secret, grant_type, scope }
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    data: new URLSearchParams({
+      username,
+      password,
+      grant_type
+    }).toString()
   })
 }
 
-export function getInfo() {
+export function getCurrentUserInfo() {
   return request({
-    url: '/system/getInfo',
+    url: '/system/users/current-user-info',
     method: 'get'
   })
 }
