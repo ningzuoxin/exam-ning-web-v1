@@ -32,8 +32,9 @@
         'sidebar'
       ]),
       routes() {
-        return permission.state.routes
-        // return this.$router.options.routes
+        // console.log('111111', this.$router, this.$router.options.routes)
+        // return permission.state.routes
+        return this.$router.options.routes // todo 测试 使用静态路由
       },
       activeMenu() {
         const route = this.$route

@@ -35,14 +35,14 @@ router.beforeEach(async (to, from, next) => {
           // get user info
           await store.dispatch('user/getInfo')
 
-          await store.dispatch('GenerateRoutes').then((accessRoutes) => {
-            router.addRoutes(accessRoutes) // 动态添加可访问路由表
-            // router.options.routes = permission.state.routes
-            // console.log(JSON.stringify(router.options))
-            next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
-          })
+          // await store.dispatch('GenerateRoutes').then((accessRoutes) => {
+          //   router.addRoutes(accessRoutes) // 动态添加可访问路由表
+          //   // router.options.routes = permission.state.routes
+          //   // console.log(JSON.stringify(router.options))
+          //   next({ ...to, replace: true }) // hack方法 确保addRoutes已完成
+          // })
 
-          // next()
+          next()
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')

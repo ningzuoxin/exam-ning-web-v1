@@ -30,7 +30,7 @@
         label="邮箱">
       </el-table-column>
       <el-table-column
-        prop="mobile"
+        prop="phoneNumber"
         label="手机号"
         width="110">
       </el-table-column>
@@ -48,7 +48,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="idcard"
+        prop="idNumber"
         label="身份证">
       </el-table-column>
       <el-table-column
@@ -104,11 +104,10 @@
     methods: {
       getList() {
         const params = { 'keyword': this.query.keyWord, 'pNum': this.query.currentPage, 'pSize': this.query.pageSize }
-        listUser(params).then(response => {
-          const data = response.data
-          this.query.currentPage = data.current
-          this.query.total = data.total
-          this.tableData = data.records
+        listUser(params).then(res => {
+          this.query.currentPage = res.pageNum
+          this.query.total = res.total
+          this.tableData = res.data
         })
       },
       handleAdd() {

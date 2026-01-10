@@ -37,7 +37,7 @@ service.interceptors.request.use(
   }
 )
 
-// response interceptor
+// esponse interceptor
 service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
@@ -50,7 +50,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   (response) => {
-    console.log(response)
+    // console.log('111111response', response)
     const res = response.data
 
     // if the custom code is not 200, it is judged as an error.

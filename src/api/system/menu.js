@@ -56,7 +56,7 @@ export function listMenuTree() {
  */
 export function getRouters() {
   return request({
-    url: '/system/menu/getRouters',
+    url: '/system/menus/routers',
     method: 'get'
   })
 }

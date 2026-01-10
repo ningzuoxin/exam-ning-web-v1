@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listUser(query) {
   return request({
-    url: '/system/user/page',
+    url: '/system/users/page',
     method: 'get',
     params: query
   })
@@ -33,7 +33,7 @@ export function getUser(query) {
  */
 export function addUser(user) {
   return request({
-    url: '/system/user/add',
+    url: '/system/users',
     method: 'post',
     data: user
   })
@@ -60,7 +60,7 @@ export function editUser(user) {
 export function deleteUser(id) {
   return request({
     url: '/system/user/delete',
-    method: 'post',
+    method: 'delete',
     params: { id: id }
   })
 }

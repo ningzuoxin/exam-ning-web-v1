@@ -74,7 +74,7 @@ export function updateRole(role, params) {
  */
 export function listAllRole() {
   return request({
-    url: '/system/role/list',
+    url: '/system/roles/all',
     method: 'get'
   })
 }

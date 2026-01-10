@@ -10,8 +10,8 @@
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="form.email"></el-input>
       </el-form-item>
-      <el-form-item label="手机" prop="mobile">
-        <el-input v-model="form.mobile"></el-input>
+      <el-form-item label="手机" prop="phoneNumber">
+        <el-input v-model="form.phoneNumber"></el-input>
       </el-form-item>
       <el-form-item label="昵称" prop="nickname">
         <el-input v-model="form.nickname"></el-input>
@@ -19,7 +19,7 @@
       <el-form-item label="角色">
         <el-select v-model="form.roleId">
           <el-option label="请选择角色" :value="0"/>
-          <el-option v-for="(item,index) in roles" :label="item.roleName" :value="item.roleId" :key="index"/>
+          <el-option v-for="(item,index) in roles" :label="item.roleName" :value="item.id" :key="index"/>
         </el-select>
       </el-form-item>
       <el-form-item label="性别">
@@ -29,7 +29,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="身份证">
-        <el-input v-model="form.idcard"></el-input>
+        <el-input v-model="form.idNumber"></el-input>
       </el-form-item>
       <el-form-item label="头像">
         <el-upload
@@ -73,7 +73,7 @@
               trigger: ['blur', 'change']
             }
           ],
-          mobile: [
+          phoneNumber: [
             { required: true, message: '手机号码不能为空', trigger: 'blur' },
             {
               pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
@@ -90,10 +90,10 @@
           username: '',
           password: '',
           email: '',
-          mobile: '',
+          phoneNumber: '',
           nickname: '',
           gender: 2,
-          idcard: '',
+          idNumber: '',
           roleId: 0
         },
         roles: []
@@ -106,8 +106,8 @@
       onSubmit() {
         this.$refs['form'].validate(valid => {
           if (valid) {
-            addUser(this.form).then(response => {
-              if (response.code === 20000) {
+            addUser(this.form).then(res => {
+              if (res.id > 0) {
                 this.msgSuccess('添加成功')
                 setTimeout(() => this.$router.push({ path: '/system/listUser' }), 1000)
               }
@@ -132,10 +132,8 @@
         return isJPG && isLt2M
       },
       listAllRole() {
-        listAllRole().then(response => {
-          if (response.code === 20000) {
-            this.roles = response.data
-          }
+        listAllRole().then(roles => {
+          this.roles = roles
         }).catch(function() {
         })
       }
