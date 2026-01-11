@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listRole(query) {
   return request({
-    url: '/system/role/page',
+    url: '/system/roles/page',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export function listRole(query) {
  */
 export function addRole(role, params) {
   return request({
-    url: '/system/role/add',
+    url: '/system/roles',
     method: 'post',
     data: role,
     params: params

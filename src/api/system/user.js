@@ -18,11 +18,10 @@ export function listUser(query) {
  * @param id
  * @returns {AxiosPromise}
  */
-export function getUser(query) {
+export function getUser(id) {
   return request({
-    url: '/system/user/get',
-    method: 'get',
-    params: query
+    url: `/system/users/${id}`,
+    method: 'get'
   })
 }
 
@@ -46,8 +45,8 @@ export function addUser(user) {
  */
 export function editUser(user) {
   return request({
-    url: '/system/user/update',
-    method: 'post',
+    url: '/system/users',
+    method: 'put',
     data: user
   })
 }
@@ -59,8 +58,7 @@ export function editUser(user) {
  */
 export function deleteUser(id) {
   return request({
-    url: '/system/user/delete',
-    method: 'delete',
-    params: { id: id }
+    url: `/system/users/${id}`,
+    method: 'delete'
   })
 }

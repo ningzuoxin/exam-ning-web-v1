@@ -56,10 +56,8 @@
       }
     },
     created() {
-      listMenuTree().then(response => {
-        if (response.code === 20000) {
-          this.treeData = response.data
-        }
+      listMenuTree().then(res => {
+        this.treeData = res
       }).catch(function() {
       })
     },
@@ -74,8 +72,8 @@
         this.$refs['form'].validate(valid => {
           if (valid) {
             const params = { menuIds: keys.toString() }
-            addRole(this.form, params).then(response => {
-              if (response.code === 20000) {
+            addRole(this.form, params).then(res => {
+              if (res.id > 0) {
                 this.msgSuccess('添加成功')
                 setTimeout(() => this.$router.push({ path: '/system/listRole' }), 1000)
               }

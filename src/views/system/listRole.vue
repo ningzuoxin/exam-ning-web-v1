@@ -84,11 +84,10 @@
     methods: {
       getList() {
         const params = { 'keyword': this.query.keyWord, 'pNum': this.query.currentPage, 'pSize': this.query.pageSize }
-        listRole(params).then(response => {
-          const data = response.data
-          this.query.currentPage = data.current
-          this.query.total = data.total
-          this.tableData = data.records
+        listRole(params).then(res => {
+          this.query.currentPage = res.pageNum
+          this.query.total = res.total
+          this.tableData = res.data
         })
       },
       handleAdd() {

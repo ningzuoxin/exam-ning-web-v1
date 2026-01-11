@@ -45,7 +45,7 @@ export function queryMC() {
  */
 export function listMenuTree() {
   return request({
-    url: '/system/menu/tree',
+    url: '/system/menus/tree',
     method: 'get'
   })
 }
