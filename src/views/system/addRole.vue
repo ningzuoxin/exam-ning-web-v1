@@ -14,11 +14,7 @@
         <el-input v-model="form.remark"></el-input>
       </el-form-item>
       <el-form-item label="授权">
-        <el-tree
-          ref="tree"
-          :data="treeData"
-          show-checkbox
-          node-key="id">
+        <el-tree ref="tree" :data="treeData" show-checkbox node-key="id">
         </el-tree>
       </el-form-item>
       <el-form-item>
@@ -30,68 +26,71 @@
 </template>
 
 <script>
-  import { addRole } from '@/api/system/role'
-  import { listMenuTree } from '@/api/system/menu'
+import { addRole } from '@/api/system/role'
+import { listMenuTree } from '@/api/system/menu'
 
-  export default {
-    name: 'AddRole',
-    data() {
-      return {
-        // 表单校验
-        rules: {
-          roleName: [
-            { required: true, message: '角色名称不能为空', trigger: 'blur' }
-          ],
-          roleKey: [
-            { required: true, message: '角色代码不能为空', trigger: 'blur' }
-          ]
-        },
-        form: {
-          roleName: '',
-          roleKey: '',
-          roleSort: 0,
-          remark: ''
-        },
-        treeData: []
-      }
-    },
-    created() {
-      listMenuTree().then(res => {
+export default {
+  name: 'AddRole',
+  data() {
+    return {
+      // 表单校验
+      rules: {
+        roleName: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+        ],
+        roleKey: [
+          { required: true, message: '角色代码不能为空', trigger: 'blur' }
+        ]
+      },
+      form: {
+        roleName: '',
+        roleKey: '',
+        roleSort: 0,
+        remark: ''
+      },
+      treeData: []
+    }
+  },
+  created() {
+    listMenuTree()
+      .then((res) => {
         this.treeData = res
-      }).catch(function() {
       })
-    },
-    methods: {
-      onSubmit() {
-        const keys = this.$refs.tree.getCheckedKeys()
-        if (keys.length === 0) {
-          this.msgError('请选择授权信息')
-          return
-        }
+      .catch(function () {})
+  },
+  methods: {
+    onSubmit() {
+      const keys = this.$refs.tree.getCheckedKeys()
+      if (keys.length === 0) {
+        this.msgError('请选择授权信息')
+        return
+      }
 
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            const params = { menuIds: keys.toString() }
-            addRole(this.form, params).then(res => {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          const params = { menuIds: keys.toString() }
+          addRole(this.form, params)
+            .then((res) => {
               if (res.id > 0) {
                 this.msgSuccess('添加成功')
-                setTimeout(() => this.$router.push({ path: '/system/listRole' }), 1000)
+                setTimeout(
+                  () => this.$router.push({ path: '/system/listRole' }),
+                  1000
+                )
               }
-            }).catch(function() {
             })
-          }
-        })
-      },
-      onCancel() {
-        this.$message({
-          message: 'cancel!',
-          type: 'warning'
-        })
-      }
+            .catch(function () {})
+        }
+      })
+    },
+    onCancel() {
+      this.$message({
+        message: 'cancel!',
+        type: 'warning'
+      })
     }
   }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

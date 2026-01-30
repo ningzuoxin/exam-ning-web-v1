@@ -6,8 +6,13 @@
       </el-form-item>
       <el-form-item label="父级菜单">
         <el-select v-model="form.parentId">
-          <el-option label="一级目录" :value="0"/>
-          <el-option v-for="(item,index) in parentMenus" :label="item.menuName" :value="item.menuId" :key="index"/>
+          <el-option label="一级目录" :value="0" />
+          <el-option
+            v-for="(item, index) in parentMenus"
+            :label="item.menuName"
+            :value="item.menuId"
+            :key="index"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="显示顺序" prop="orderNum">
@@ -27,9 +32,9 @@
       </el-form-item>
       <el-form-item label="菜单类型">
         <el-radio-group v-model="form.menuType">
-          <el-radio label="M">目录</el-radio>
-          <el-radio label="C">菜单</el-radio>
-          <el-radio label="F">按钮</el-radio>
+          <el-radio label="1">目录</el-radio>
+          <el-radio label="2">菜单</el-radio>
+          <el-radio label="3">按钮</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="菜单状态">
@@ -56,81 +61,82 @@
 </template>
 
 <script>
-  import { addMenu, queryMC } from '@/api/system/menu'
+import { addMenu, queryMC } from '@/api/system/menu'
 
-  export default {
-    name: 'AddMenu',
-    data() {
-      return {
-        // 表单校验
-        rules: {
-          roleName: [
-            { required: true, message: '角色名称不能为空', trigger: 'blur' }
-          ],
-          roleKey: [
-            { required: true, message: '角色代码不能为空', trigger: 'blur' }
-          ]
-        },
-        form: {
-          menuName: '',
-          parentId: 0,
-          orderNum: 0,
-          path: '',
-          component: '',
-          isFrame: 1,
-          menuType: 'F',
-          visible: '1',
-          perms: '',
-          icon: '#',
-          remark: ''
-        },
-        parentMenus: []
-      }
-    },
-    watch: {
-      'form.menuType': {
-        handler(val, oldVal) {
-          if (val === 'M' || val === 'C') {
-            this.form.visible = '0'
-          } else {
-            this.form.visible = '1'
-          }
-        },
-        deep: true
-      }
-    },
-    created() {
-      queryMC().then(response => {
-        if (response.code === 20000) {
-          this.parentMenus = response.data
+export default {
+  name: 'AddMenu',
+  data() {
+    return {
+      // 表单校验
+      rules: {
+        roleName: [
+          { required: true, message: '角色名称不能为空', trigger: 'blur' }
+        ],
+        roleKey: [
+          { required: true, message: '角色代码不能为空', trigger: 'blur' }
+        ]
+      },
+      form: {
+        menuName: '',
+        parentId: 0,
+        orderNum: 0,
+        path: '',
+        component: '',
+        isFrame: 1,
+        menuType: 'F',
+        visible: '1',
+        perms: '',
+        icon: '#',
+        remark: ''
+      },
+      parentMenus: []
+    }
+  },
+  watch: {
+    'form.menuType': {
+      handler(val, oldVal) {
+        if (val === 'M' || val === 'C') {
+          this.form.visible = '0'
+        } else {
+          this.form.visible = '1'
         }
-      }).catch(function() {
+      },
+      deep: true
+    }
+  },
+  created() {
+    queryMC()
+      .then((res) => {
+        this.parentMenus = res
+      })
+      .catch(function () {})
+  },
+  methods: {
+    onSubmit() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          addMenu(this.form)
+            .then((res) => {
+              if (res.id > 0) {
+                this.msgSuccess('添加成功')
+                setTimeout(
+                  () => this.$router.push({ path: '/system/listMenu' }),
+                  1000
+                )
+              }
+            })
+            .catch(function () {})
+        }
       })
     },
-    methods: {
-      onSubmit() {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            addMenu(this.form).then(response => {
-              if (response.code === 20000) {
-                this.msgSuccess('添加成功')
-                setTimeout(() => this.$router.push({ path: '/system/listMenu' }), 1000)
-              }
-            }).catch(function() {
-            })
-          }
-        })
-      },
-      onCancel() {
-        this.$message({
-          message: 'cancel!',
-          type: 'warning'
-        })
-      }
+    onCancel() {
+      this.$message({
+        message: 'cancel!',
+        type: 'warning'
+      })
     }
   }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

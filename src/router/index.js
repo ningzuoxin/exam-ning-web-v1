@@ -113,6 +113,13 @@ export const constantRoutes = [
         component: () => import('@/views/system/addMenu'),
         meta: { title: '添加菜单', icon: 'el-icon-document-add' },
         hidden: true
+      },
+      {
+        path: 'updateMenu',
+        name: 'UpdateMenu',
+        component: () => import('@/views/system/updateMenu'),
+        meta: { title: '编辑菜单', icon: 'el-icon-document-add' },
+        hidden: true
       }
     ]
   },

@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function listMenu(query) {
   return request({
-    url: '/system/menu/page',
+    url: '/system/menus/page',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export function listMenu(query) {
  */
 export function addMenu(menu) {
   return request({
-    url: '/system/menu/add',
+    url: '/system/menus',
     method: 'post',
     data: menu
   })
@@ -33,7 +33,7 @@ export function addMenu(menu) {
  */
 export function queryMC() {
   return request({
-    url: '/system/menu/queryMC',
+    url: '/system/menus/catalog-menu',
     method: 'get'
   })
 }
@@ -63,14 +63,13 @@ export function getRouters() {
 
 /**
  * 查询菜单
- * @param query
+ * @param id
  * @returns {AxiosPromise}
  */
-export function getMenu(query) {
+export function getMenu(id) {
   return request({
-    url: '/system/menu/get',
-    method: 'get',
-    params: query
+    url: `/system/menus/${id}`,
+    method: 'get'
   })
 }
 
